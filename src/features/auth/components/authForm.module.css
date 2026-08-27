@@ -1,0 +1,157 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+/* Checkbox com alvo de toque cheio — no celular o quadrado de 16px sozinho
+   é pequeno demais para acertar. */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-target);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand);
+  cursor: pointer;
+}
+
+.link {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--brand);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-target);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--text);
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--sp-4);
+}
+
+/* Bloco de contas de teste — existe só enquanto não há back-end. */
+.demo {
+  margin-top: var(--sp-6);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.demoTitle {
+  display: block;
+  margin-bottom: var(--sp-1);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.demo code {
+  color: var(--text);
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* Confirmação de e-mail enviado. */
+.confirmation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-6) 0;
+  text-align: center;
+}
+
+.confirmationIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: var(--brand-soft);
+  border-radius: var(--radius-full);
+  color: var(--brand);
+}
+
+.confirmationText {
+  color: var(--text-muted);
+  max-width: 38ch;
+}
+
+.strong {
+  color: var(--text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Requisitos da senha, verificados enquanto a pessoa digita — prevenir o erro
+   é melhor do que reclamar dele depois de submeter. */
+.requirements {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: calc(var(--sp-2) * -1);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border-radius: var(--radius);
+  list-style: none;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.requirementMet {
+  color: var(--ok);
+}
+
+.requirementDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}

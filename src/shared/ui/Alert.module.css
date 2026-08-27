@@ -1,0 +1,32 @@
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid;
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.danger {
+  background: var(--expired-soft);
+  border-color: rgb(229 72 77 / 0.3);
+  color: #ffb3b5;
+}
+
+.success {
+  background: var(--ok-soft);
+  border-color: rgb(48 164 108 / 0.3);
+  color: #86e0b3;
+}
+
+.info {
+  background: var(--brand-soft);
+  border-color: rgb(59 130 246 / 0.3);
+  color: #a7c8fb;
+}

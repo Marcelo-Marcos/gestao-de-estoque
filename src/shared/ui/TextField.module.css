@@ -1,0 +1,103 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.optional {
+  color: var(--text-subtle);
+  font-weight: 400;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  min-height: var(--touch-target);
+  padding: 0 var(--sp-4);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: var(--fs-md);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.input::placeholder {
+  color: var(--text-subtle);
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+.input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Espaço para o botão de mostrar/ocultar senha. */
+.hasAction {
+  padding-right: var(--touch-target);
+}
+
+.invalid {
+  border-color: var(--expired);
+}
+
+.invalid:focus {
+  border-color: var(--expired);
+  box-shadow: 0 0 0 3px var(--expired-soft);
+}
+
+.action {
+  position: absolute;
+  right: var(--sp-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.action:hover {
+  color: var(--text);
+}
+
+/* Erro fica ao lado do campo, nunca num bloco no topo. */
+.error {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--expired);
+}
+
+.hint {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}

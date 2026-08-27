@@ -1,0 +1,82 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-target);
+  padding: 0 var(--sp-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Enquanto carrega o botão continua habilitado para leitores de tela lerem
+   o estado, mas ignora cliques — evita registro duplicado. */
+.loading {
+  pointer-events: none;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* ---- Variantes -------------------------------------------------------- */
+.primary {
+  background: var(--brand);
+  color: #fff;
+}
+.primary:hover:not(:disabled) {
+  background: var(--brand-hover);
+}
+
+.secondary {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+.secondary:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text-muted);
+  padding: 0 var(--sp-3);
+}
+.ghost:hover:not(:disabled) {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* ---- Spinner ----------------------------------------------------------- */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin 600ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
