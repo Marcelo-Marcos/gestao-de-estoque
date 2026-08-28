@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { readJson, removeKey, storageKey, writeJson } from '@/shared/lib/storage'
 import * as authApi from './api'
@@ -8,8 +8,6 @@ const STORAGE_KEY = storageKey('session')
 
 interface AuthContextValue {
   user: User | null
-  /** Enquanto true, ainda não sabemos se há sessão — não decida rota antes. */
-  initializing: boolean
   signIn: (credentials: Credentials, remember: boolean) => Promise<Result<User>>
   signOut: () => void
 }
@@ -25,13 +23,11 @@ function readStoredUser(): User | null {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [initializing, setInitializing] = useState(true)
-
-  useEffect(() => {
-    setUser(readStoredUser())
-    setInitializing(false)
-  }, [])
+  // Lida na inicialização do estado, não em efeito: o storage responde na
+  // hora, então já sabemos se há sessão no primeiro render. Ler depois
+  // custaria um render a mais e uma janela em que a rota seria decidida sem
+  // saber quem está logado.
+  const [user, setUser] = useState<User | null>(readStoredUser)
 
   const signIn = useCallback(async (credentials: Credentials, remember: boolean) => {
     const result = await authApi.signIn(credentials)
@@ -52,10 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }, [])
 
-  const value = useMemo(
-    () => ({ user, initializing, signIn, signOut }),
-    [user, initializing, signIn, signOut],
-  )
+  const value = useMemo(() => ({ user, signIn, signOut }), [user, signIn, signOut])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

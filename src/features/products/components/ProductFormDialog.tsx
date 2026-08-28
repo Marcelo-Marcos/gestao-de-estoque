@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
@@ -30,21 +30,38 @@ const SAVE_MESSAGES = {
   barras_duplicado: 'Esse código de barras já está em outro produto.',
 } as const
 
+/**
+ * Só existe enquanto aberto, e é remontado a cada produto diferente.
+ *
+ * Assim o estado do formulário nasce direto dos dados do produto, em vez de
+ * um efeito "limpar tudo" rodando depois que a tela já apareceu com o
+ * conteúdo do produto anterior.
+ */
 export function ProductFormDialog({ open, product, onClose, onSaved }: ProductFormDialogProps) {
-  const [draft, setDraft] = useState<ProductDraft>(EMPTY)
+  if (!open) return null
+
+  return (
+    <ProductForm
+      key={product?.id ?? 'novo'}
+      product={product}
+      onClose={onClose}
+      onSaved={onSaved}
+    />
+  )
+}
+
+type ProductFormProps = Omit<ProductFormDialogProps, 'open'>
+
+function ProductForm({ product, onClose, onSaved }: ProductFormProps) {
+  const [draft, setDraft] = useState<ProductDraft>(() =>
+    product
+      ? { sku: product.sku, description: product.description, barcode: product.barcode }
+      : EMPTY,
+  )
   const [errors, setErrors] = useState<FieldErrors>({})
   const [formError, setFormError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
-
-  // Recarrega o formulário sempre que o diálogo abre em outro produto.
-  useEffect(() => {
-    if (!open) return
-    setDraft(product ? { sku: product.sku, description: product.description, barcode: product.barcode } : EMPTY)
-    setErrors({})
-    setFormError(null)
-    setConfirmingDelete(false)
-  }, [open, product])
 
   function validate(): FieldErrors {
     const next: FieldErrors = {}
@@ -102,7 +119,7 @@ export function ProductFormDialog({ open, product, onClose, onSaved }: ProductFo
 
   return (
     <Dialog
-      open={open}
+      open
       onClose={onClose}
       title={product ? 'Editar produto' : 'Novo produto'}
       subtitle={product ? `SKU ${product.sku}` : 'Cadastre um produto que não veio na planilha.'}

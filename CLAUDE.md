@@ -82,10 +82,32 @@ Ainda não existe. Cada feature isola o acesso a dados em seu `api.ts`, hoje
 resolvido em memória. Quando o servidor existir, só esses arquivos mudam — as
 telas não.
 
+## Checagem automática dos padrões
+
+Parte das regras acima é verificada por máquina, não por memória. `npm run
+lint` roda antes de todo commit (hook em `.githooks/pre-commit`, ativado
+sozinho pelo `npm install`) e falha se:
+
+| Regra | O que reprova | Onde está configurada |
+|---|---|---|
+| Cor fora de token | `#hex`, `rgb()`, `hsl()` em CSS de componente | `stylelint.config.js` |
+| Storage direto | `localStorage`/`sessionStorage` fora de `shared/lib/storage.ts` | `eslint.config.js` |
+| Acoplamento entre features | importar `@/features/x/algo` em vez de `@/features/x` | `eslint.config.js` |
+| Arquivo grande | acima de 200 linhas de código (aviso) | `eslint.config.js` |
+
+O que **não** dá para automatizar continua valendo e depende de julgamento:
+responsividade real, dark mode conferido nos dois temas, filtro restaurado
+visível e fácil de desfazer, e cor nunca sendo o único sinal de estado.
+
+Para pular a checagem numa emergência: `git commit --no-verify`.
+
 ## Comandos
 
 ```bash
-npm run dev     # desenvolvimento
-npm run build   # build de produção
-npm run lint    # checagem de tipos
+npm run dev         # desenvolvimento
+npm run build       # build de produção
+npm run lint        # tipos + código + CSS (o que o hook roda)
+npm run lint:types  # só TypeScript
+npm run lint:code   # só ESLint
+npm run lint:css    # só Stylelint
 ```

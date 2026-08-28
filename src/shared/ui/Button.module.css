@@ -40,7 +40,7 @@
 /* ---- Variantes -------------------------------------------------------- */
 .primary {
   background: var(--brand);
-  color: #fff;
+  color: var(--brand-contrast);
 }
 .primary:hover:not(:disabled) {
   background: var(--brand-hover);

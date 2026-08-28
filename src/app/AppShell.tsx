@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import { Logo } from '@/shared/ui/Logo'
 import { Button } from '@/shared/ui/Button'
 import {
@@ -24,10 +24,6 @@ export function AppShell() {
   const { user, signOut } = useAuth()
   const { resolvedMode, setMode } = useAppearance()
   const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-
-  // Navegar fecha a gaveta: deixá-la aberta sobre a tela nova é desorientador.
-  useEffect(() => setMenuOpen(false), [location.pathname])
 
   // Esc fecha a gaveta. Sem isto, quem navega por teclado fica preso: o menu
   // cobre a tela e a única saída seria alcançar o fundo escuro com o mouse.
@@ -64,6 +60,10 @@ export function AppShell() {
               <NavLink
                 key={to}
                 to={to}
+                // Navegar fecha a gaveta: deixá-la aberta sobre a tela nova é
+                // desorientador. É consequência do clique, não de um efeito
+                // observando a rota depois que ela já mudou.
+                onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   `${styles.navItem} ${isActive ? styles.navItemActive : ''}`
                 }

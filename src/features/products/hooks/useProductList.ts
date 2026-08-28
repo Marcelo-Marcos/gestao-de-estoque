@@ -32,34 +32,41 @@ export function useProductList() {
     isProductQuery,
   )
 
-  const [products, setProducts] = useState<Product[]>([])
-  const [matching, setMatching] = useState(0)
-  const [total, setTotal] = useState(0)
-  const [status, setStatus] = useState<ListStatus>('loading')
-  const [reloadKey, setReloadKey] = useState(0)
-
   // Sem espera, cada tecla dispararia uma varredura da base inteira.
   const debouncedSearch = useDebouncedValue(filters.search, 250)
 
+  /**
+   * Identifica a consulta em curso. Guardar o resultado junto da chave que o
+   * produziu permite derivar o estado da tela por comparação, em vez de
+   * gravar "carregando" antes de cada busca — o que custaria um render a mais
+   * e faria a lista piscar a cada tecla.
+   */
+  const queryKey = `${debouncedSearch}|${filters.onlyWithoutBarcode}`
+
+  const [result, setResult] = useState<{ key: string; items: Product[]; total: number } | null>(
+    null,
+  )
+  const [failedKey, setFailedKey] = useState<string | null>(null)
+  const [total, setTotal] = useState(0)
+  const [reloadKey, setReloadKey] = useState(0)
+
   useEffect(() => {
     let cancelled = false
-    setStatus('loading')
 
     listProducts({ search: debouncedSearch, onlyWithoutBarcode: filters.onlyWithoutBarcode })
       .then((page) => {
         if (cancelled) return
-        setProducts(page.items)
-        setMatching(page.total)
-        setStatus('ready')
+        setFailedKey(null)
+        setResult({ key: queryKey, items: page.items, total: page.total })
       })
       .catch(() => {
-        if (!cancelled) setStatus('error')
+        if (!cancelled) setFailedKey(queryKey)
       })
 
     return () => {
       cancelled = true
     }
-  }, [debouncedSearch, filters.onlyWithoutBarcode, reloadKey])
+  }, [queryKey, debouncedSearch, filters.onlyWithoutBarcode, reloadKey])
 
   useEffect(() => {
     let cancelled = false
@@ -72,6 +79,15 @@ export function useProductList() {
       cancelled = true
     }
   }, [reloadKey])
+
+  // Recarregar depois de salvar mantém a lista anterior visível até a nova
+  // chegar: um esqueleto piscando ao fechar o formulário é pior que 200ms de
+  // dado levemente velho.
+  const status: ListStatus =
+    failedKey === queryKey ? 'error' : result === null ? 'loading' : 'ready'
+
+  const products = result?.items ?? []
+  const matching = result?.total ?? 0
 
   const setSearch = useCallback(
     (search: string) => setFilters((current) => ({ ...current, search })),

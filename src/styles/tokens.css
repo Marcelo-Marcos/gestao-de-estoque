@@ -134,6 +134,9 @@
   --brand-soft: rgb(59 130 246 / 0.14);
   --brand-ring: rgb(59 130 246 / 0.4);
   --brand-contrast: #ffffff;
+  /* Texto sobre --brand-soft. O próprio --brand não tem contraste suficiente
+     para corpo de texto sobre esse fundo. */
+  --brand-text: #a7c8fb;
 }
 
 :root[data-accent='verde'] {
@@ -142,6 +145,7 @@
   --brand-soft: rgb(18 161 80 / 0.14);
   --brand-ring: rgb(18 161 80 / 0.4);
   --brand-contrast: #ffffff;
+  --brand-text: #7fdba8;
 }
 
 :root[data-accent='roxo'] {
@@ -150,6 +154,7 @@
   --brand-soft: rgb(124 92 240 / 0.14);
   --brand-ring: rgb(124 92 240 / 0.4);
   --brand-contrast: #ffffff;
+  --brand-text: #c3b1fb;
 }
 
 :root[data-accent='laranja'] {
@@ -158,6 +163,7 @@
   --brand-soft: rgb(226 98 15 / 0.14);
   --brand-ring: rgb(226 98 15 / 0.4);
   --brand-contrast: #ffffff;
+  --brand-text: #f5b184;
 }
 
 :root[data-accent='grafite'] {
@@ -166,16 +172,40 @@
   --brand-soft: rgb(75 85 99 / 0.16);
   --brand-ring: rgb(75 85 99 / 0.45);
   --brand-contrast: #ffffff;
+  --brand-text: #b6bdc8;
 }
 
-/* No tema claro o azul e o roxo precisam fechar um pouco para o texto branco
-   do botão manter contraste suficiente. */
+/* ---- Ajustes de acento no tema claro ------------------------------------
+ * Precisam combinar tema e acento na mesma regra: os blocos de acento acima
+ * têm a mesma especificidade do bloco de tema claro e vêm depois, então um
+ * valor solto lá seria sobrescrito — foi assim que o texto do alerta ficou
+ * azul-claro sobre fundo branco.
+ *
+ * O --brand-text escurece em todos os acentos: ele é texto sobre --brand-soft,
+ * que no tema claro é quase branco.
+ */
 :root[data-theme='light'][data-accent='azul'] {
+  /* Azul e roxo também fecham o próprio --brand, para o texto branco do botão
+     manter contraste suficiente. */
   --brand: #2563eb;
   --brand-hover: #1d4fd7;
+  --brand-text: #1e40af;
+}
+
+:root[data-theme='light'][data-accent='verde'] {
+  --brand-text: #0b5f2f;
 }
 
 :root[data-theme='light'][data-accent='roxo'] {
   --brand: #6941d6;
   --brand-hover: #5a35c0;
+  --brand-text: #4c2ba0;
+}
+
+:root[data-theme='light'][data-accent='laranja'] {
+  --brand-text: #8a3906;
+}
+
+:root[data-theme='light'][data-accent='grafite'] {
+  --brand-text: #333b47;
 }

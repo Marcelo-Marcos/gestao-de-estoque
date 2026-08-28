@@ -23,7 +23,7 @@
     padding: var(--sp-12);
     overflow: hidden;
     background:
-      radial-gradient(120% 90% at 15% 0%, rgb(59 130 246 / 0.16), transparent 60%),
+      radial-gradient(120% 90% at 15% 0%, var(--brand-soft), transparent 60%),
       var(--bg-elevated);
     border-right: 1px solid var(--border);
   }

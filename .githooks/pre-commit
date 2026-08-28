@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# Roda as checagens do projeto antes de cada commit.
+#
+# Os padrões do CLAUDE.md que dão para verificar por máquina são verificados
+# aqui: cor fora de token, localStorage direto em componente, feature
+# importando de dentro de outra e arquivo grande demais.
+#
+# Para pular numa emergência: git commit --no-verify
+
+set -e
+
+echo "→ checando tipos, código e CSS…"
+npm run lint
+
+echo "✓ tudo certo"

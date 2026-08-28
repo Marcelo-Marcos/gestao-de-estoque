@@ -25,6 +25,10 @@ interface ProductsTableProps {
 export function ProductsTable({ products, onEdit, estimatedRowHeight }: ProductsTableProps) {
   const scrollerRef = useRef<HTMLDivElement>(null)
 
+  // O TanStack Virtual devolve funções que a checagem de hooks não consegue
+  // provar seguras para memoizar. É limitação da análise, não do uso: o
+  // virtualizador é feito para ser chamado exatamente assim.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: products.length,
     getScrollElement: () => scrollerRef.current,

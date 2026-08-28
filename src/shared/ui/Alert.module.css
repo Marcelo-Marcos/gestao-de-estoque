@@ -15,18 +15,18 @@
 
 .danger {
   background: var(--expired-soft);
-  border-color: rgb(229 72 77 / 0.3);
-  color: #ffb3b5;
+  border-color: var(--expired);
+  color: var(--expired-text);
 }
 
 .success {
   background: var(--ok-soft);
-  border-color: rgb(48 164 108 / 0.3);
-  color: #86e0b3;
+  border-color: var(--ok);
+  color: var(--ok-text);
 }
 
 .info {
   background: var(--brand-soft);
-  border-color: rgb(59 130 246 / 0.3);
-  color: #a7c8fb;
+  border-color: var(--brand);
+  color: var(--brand-text);
 }
