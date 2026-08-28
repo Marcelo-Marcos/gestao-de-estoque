@@ -63,18 +63,24 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         )}
       </div>
 
-      {hint && !error && (
-        <p className={styles.hint} id={hintId}>
-          {hint}
-        </p>
-      )}
-
-      {error && (
-        <p className={styles.error} id={errorId}>
-          <AlertIcon width={16} height={16} />
-          {error}
-        </p>
-      )}
+      {/*
+        O espaço da mensagem é sempre reservado, mesmo vazio. Sem isso, uma
+        mensagem que aparece ao sair do campo empurra o conteúdo de baixo no
+        exato instante em que o usuário está clicando nele: o mouseup cai fora
+        do alvo e o clique se perde sem nenhum sinal.
+      */}
+      <div className={styles.message}>
+        {error ? (
+          <p className={styles.error} id={errorId}>
+            <AlertIcon width={16} height={16} />
+            {error}
+          </p>
+        ) : hint ? (
+          <p className={styles.hint} id={hintId}>
+            {hint}
+          </p>
+        ) : null}
+      </div>
     </div>
   )
 })

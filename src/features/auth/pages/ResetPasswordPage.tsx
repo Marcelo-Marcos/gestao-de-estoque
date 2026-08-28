@@ -8,6 +8,7 @@ import { ArrowLeftIcon, CheckIcon } from '@/shared/ui/icons'
 import {
   MIN_PASSWORD_LENGTH,
   validateNewPassword,
+  validateOnBlur,
   validatePasswordConfirmation,
 } from '@/shared/lib/validation'
 import { AuthLayout } from '../components/AuthLayout'
@@ -125,7 +126,9 @@ export function ResetPasswordPage() {
           onBlur={() =>
             setFieldErrors((prev) => ({
               ...prev,
-              confirmation: validatePasswordConfirmation(password, confirmation),
+              confirmation: validateOnBlur(confirmation, (value) =>
+                validatePasswordConfirmation(password, value),
+              ),
             }))
           }
           error={fieldErrors.confirmation}

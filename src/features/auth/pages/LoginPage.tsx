@@ -4,7 +4,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
 import { TextField } from '@/shared/ui/TextField'
-import { validateEmail, validateRequiredPassword } from '@/shared/lib/validation'
+import { validateEmail, validateOnBlur, validateRequiredPassword } from '@/shared/lib/validation'
 import { AuthLayout } from '../components/AuthLayout'
 import { useAuth } from '../AuthContext'
 import styles from '../components/authForm.module.css'
@@ -77,7 +77,9 @@ export function LoginPage() {
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          onBlur={() => setFieldErrors((prev) => ({ ...prev, email: validateEmail(email) }))}
+          onBlur={() =>
+            setFieldErrors((prev) => ({ ...prev, email: validateOnBlur(email, validateEmail) }))
+          }
           error={fieldErrors.email}
           autoComplete="username"
           inputMode="email"
@@ -94,7 +96,10 @@ export function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onBlur={() =>
-            setFieldErrors((prev) => ({ ...prev, password: validateRequiredPassword(password) }))
+            setFieldErrors((prev) => ({
+              ...prev,
+              password: validateOnBlur(password, validateRequiredPassword),
+            }))
           }
           error={fieldErrors.password}
           autoComplete="current-password"

@@ -4,6 +4,11 @@
   gap: var(--sp-2);
 }
 
+/* Altura de uma linha, sempre presente: ver o comentário em TextField.tsx. */
+.message {
+  min-height: 20px;
+}
+
 .label {
   font-size: var(--fs-sm);
   font-weight: 500;

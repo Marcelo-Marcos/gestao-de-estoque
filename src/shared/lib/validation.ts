@@ -2,10 +2,22 @@
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
+/**
+ * Valida ao sair do campo, mas só depois que a pessoa digitou alguma coisa.
+ * Acusar "informe seu e-mail" em um campo que ela apenas tangenciou é
+ * corretivo sem motivo — a cobrança de campo obrigatório fica para o envio.
+ */
+export function validateOnBlur(
+  value: string,
+  validate: (value: string) => string | undefined,
+): string | undefined {
+  return value.trim() ? validate(value) : undefined
+}
+
 export function validateEmail(value: string): string | undefined {
   const email = value.trim()
   if (!email) return 'Informe seu e-mail.'
-  if (!EMAIL_RE.test(email)) return 'E-mail inválido. Confira se está escrito corretamente.'
+  if (!EMAIL_RE.test(email)) return 'E-mail inválido. Confira o endereço.'
   return undefined
 }
 

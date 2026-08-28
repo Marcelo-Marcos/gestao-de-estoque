@@ -15,16 +15,40 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+/**
+ * Acesso ao storage sempre protegido: em navegador com dados de site
+ * bloqueados, em aba anônima ou dentro de um iframe restrito, até ler
+ * `window.localStorage` lança exceção. A sessão é uma conveniência — falhar
+ * ao gravá-la nunca pode derrubar o login.
+ */
+function withStore<T>(kind: 'local' | 'session', action: (store: Storage) => T): T | null {
+  try {
+    const store = kind === 'local' ? window.localStorage : window.sessionStorage
+    return action(store)
+  } catch {
+    return null
+  }
+}
+
 /** Lê a sessão de onde ela tiver sido gravada, sem quebrar se estiver corrompida. */
 function readStoredUser(): User | null {
-  for (const store of [window.localStorage, window.sessionStorage]) {
-    try {
+  for (const kind of ['local', 'session'] as const) {
+    const user = withStore(kind, (store) => {
       const raw = store.getItem(STORAGE_KEY)
-      if (raw) return JSON.parse(raw) as User
-    } catch {
-      store.removeItem(STORAGE_KEY)
-    }
+      if (!raw) return null
+
+      try {
+        return JSON.parse(raw) as User
+      } catch {
+        // Registro corrompido: descarta para não travar todo acesso futuro.
+        store.removeItem(STORAGE_KEY)
+        return null
+      }
+    })
+
+    if (user) return user
   }
+
   return null
 }
 
@@ -43,8 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (result.data) {
       // "Manter conectado" decide apenas onde a sessão vive: localStorage
       // sobrevive ao fechar o navegador, sessionStorage não.
-      const store = remember ? window.localStorage : window.sessionStorage
-      store.setItem(STORAGE_KEY, JSON.stringify(result.data))
+      withStore(remember ? 'local' : 'session', (store) =>
+        store.setItem(STORAGE_KEY, JSON.stringify(result.data)),
+      )
       setUser(result.data)
     }
 
@@ -52,8 +77,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signOut = useCallback(() => {
-    window.localStorage.removeItem(STORAGE_KEY)
-    window.sessionStorage.removeItem(STORAGE_KEY)
+    withStore('local', (store) => store.removeItem(STORAGE_KEY))
+    withStore('session', (store) => store.removeItem(STORAGE_KEY))
     setUser(null)
   }, [])
 

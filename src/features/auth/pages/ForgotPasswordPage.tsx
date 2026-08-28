@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button } from '@/shared/ui/Button'
 import { TextField } from '@/shared/ui/TextField'
 import { ArrowLeftIcon, MailIcon } from '@/shared/ui/icons'
-import { validateEmail } from '@/shared/lib/validation'
+import { validateEmail, validateOnBlur } from '@/shared/lib/validation'
 import { AuthLayout } from '../components/AuthLayout'
 import { requestPasswordReset } from '../api'
 import styles from '../components/authForm.module.css'
@@ -74,7 +74,7 @@ export function ForgotPasswordPage() {
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          onBlur={() => setFieldError(validateEmail(email))}
+          onBlur={() => setFieldError(validateOnBlur(email, validateEmail))}
           error={fieldError}
           autoComplete="username"
           inputMode="email"
