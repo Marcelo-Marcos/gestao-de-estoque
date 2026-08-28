@@ -7,8 +7,12 @@ import styles from './ProductsTable.module.css'
 interface ProductsTableProps {
   products: Product[]
   onEdit: (product: Product) => void
-  /** Altura de uma linha; muda entre celular e desktop. */
-  rowHeight: number
+  /**
+   * Altura provável de uma linha, usada só até ela ser medida de verdade.
+   * Um palpite próximo do real deixa a barra de rolagem estável desde o
+   * primeiro quadro.
+   */
+  estimatedRowHeight: number
 }
 
 /**
@@ -18,14 +22,18 @@ interface ProductsTableProps {
  * rolagem e no filtro. Com virtualização o custo passa a depender do tamanho
  * da janela, não do tamanho da base.
  */
-export function ProductsTable({ products, onEdit, rowHeight }: ProductsTableProps) {
+export function ProductsTable({ products, onEdit, estimatedRowHeight }: ProductsTableProps) {
   const scrollerRef = useRef<HTMLDivElement>(null)
 
   const virtualizer = useVirtualizer({
     count: products.length,
     getScrollElement: () => scrollerRef.current,
-    estimateSize: () => rowHeight,
+    estimateSize: () => estimatedRowHeight,
     overscan: 8,
+    // No celular a descrição do produto ocupa uma ou duas linhas conforme o
+    // nome. Com altura fixa, o nome de duas linhas passava por cima do SKU.
+    // Medindo cada linha depois de desenhada, ela cresce só o necessário.
+    measureElement: (element) => element.getBoundingClientRect().height,
   })
 
   return (
@@ -46,7 +54,11 @@ export function ProductsTable({ products, onEdit, rowHeight }: ProductsTableProp
               <div
                 key={product.id}
                 className={styles.item}
-                style={{ height: virtualRow.size, transform: `translateY(${virtualRow.start}px)` }}
+                // O virtualizador precisa do índice para saber qual linha
+                // acabou de medir.
+                data-index={virtualRow.index}
+                ref={virtualizer.measureElement}
+                style={{ transform: `translateY(${virtualRow.start}px)` }}
               >
                 <div className={styles.itemInner}>
                   <span className={styles.barcode}>
@@ -60,7 +72,12 @@ export function ProductsTable({ products, onEdit, rowHeight }: ProductsTableProp
                     )}
                   </span>
 
-                  <span className={styles.sku}>{product.sku}</span>
+                  <span className={styles.sku}>
+                    {/* No celular não há cabeçalho de coluna: sem o rótulo,
+                        o número solto poderia ser lido como quantidade. */}
+                    <span className={styles.fieldLabel}>SKU</span>
+                    {product.sku}
+                  </span>
                   <span className={styles.description} title={product.description}>
                     {product.description}
                   </span>

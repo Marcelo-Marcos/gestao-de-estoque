@@ -40,18 +40,32 @@
   gap: var(--sp-2);
 }
 
-/* No celular as ações ocupam a largura toda, embaixo do título. */
+/* Palavra que só cabe em tela larga; no celular o ícone já diz do que se
+   trata. Fica escondida da vista, mas continua no nome acessível — com
+   display:none o leitor de tela anunciaria apenas "Importar". */
 @media (max-width: 599px) {
+  .labelExtra {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
   .header {
     flex-direction: column;
   }
 
   .actions {
     width: 100%;
+    /* Se ainda assim não couberem lado a lado — telas de 320px, fonte
+       aumentada pelo sistema — elas empilham em vez de serem cortadas. */
+    flex-wrap: wrap;
   }
 
   .actions > * {
-    flex: 1;
+    flex: 1 1 auto;
   }
 }
 

@@ -92,11 +92,11 @@ export function ProductsPage() {
         <div className={styles.actions}>
           <Button variant="secondary" onClick={() => setImportOpen(true)}>
             <UploadIcon width={18} height={18} />
-            Importar planilha
+            Importar<span className={styles.labelExtra}>&nbsp;planilha</span>
           </Button>
           <Button onClick={openNew}>
             <PlusIcon width={18} height={18} />
-            Novo produto
+            Novo<span className={styles.labelExtra}>&nbsp;produto</span>
           </Button>
         </div>
       </header>
@@ -109,7 +109,9 @@ export function ProductsPage() {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por descrição, SKU ou código de barras"
+            // O texto longo aparece cortado em tela estreita; o rótulo
+            // acessível continua completo para quem usa leitor de tela.
+            placeholder={isNarrow ? 'Buscar produto' : 'Buscar por descrição, SKU ou código de barras'}
             aria-label="Buscar produtos"
             autoComplete="off"
           />
@@ -183,7 +185,7 @@ export function ProductsPage() {
       )}
 
       {status === 'ready' && products.length > 0 && (
-        <ProductsTable products={products} onEdit={openEdit} rowHeight={isNarrow ? 96 : 52} />
+        <ProductsTable products={products} onEdit={openEdit} estimatedRowHeight={isNarrow ? 118 : 52} />
       )}
 
       <ProductFormDialog

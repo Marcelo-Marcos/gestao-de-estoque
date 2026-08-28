@@ -54,8 +54,14 @@
 
 .itemInner {
   composes: row;
-  height: 100%;
+  /* Altura mínima, não fixa: a linha cresce quando o nome do produto quebra. */
+  min-height: 52px;
   transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+/* Rótulo do campo, visível só onde não existe cabeçalho de coluna. */
+.fieldLabel {
+  display: none;
 }
 
 .item:hover .itemInner {
@@ -126,12 +132,13 @@
 
   .row {
     grid-template-columns: 1fr auto;
-    gap: var(--sp-1) var(--sp-3);
-    padding: var(--sp-3) var(--sp-4);
+    gap: var(--sp-2) var(--sp-3);
+    padding: var(--sp-4);
     align-items: start;
   }
 
   .itemInner {
+    min-height: 96px;
     grid-template-areas:
       'desc  edit'
       'sku   edit'
@@ -140,18 +147,37 @@
 
   .description {
     grid-area: desc;
+    /* O nome do produto é o dado que o usuário procura no corredor da loja:
+       ele quebra em quantas linhas precisar, em corpo maior que o da tabela. */
     white-space: normal;
-    font-weight: 500;
+    overflow: visible;
+    font-size: var(--fs-md);
+    font-weight: 600;
+    line-height: 1.35;
   }
 
   .sku {
     grid-area: sku;
-    font-size: var(--fs-xs);
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
     color: var(--text-muted);
+  }
+
+  .fieldLabel {
+    display: inline;
+    font-family: var(--font-ui);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
   }
 
   .barcode {
     grid-area: barra;
+    font-size: var(--fs-sm);
   }
 
   .editButton {
