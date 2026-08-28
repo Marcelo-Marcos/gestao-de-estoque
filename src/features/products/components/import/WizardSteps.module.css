@@ -1,0 +1,59 @@
+.steps {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+  list-style: none;
+  padding: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  white-space: nowrap;
+}
+
+.number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.current {
+  color: var(--text);
+}
+
+.current .number {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--brand-contrast);
+}
+
+.done .number {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+  color: var(--ok-text);
+}
+
+.divider {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Em tela estreita o trilho inteiro não cabe; fica só a etapa atual. */
+@media (max-width: 599px) {
+  .step:not(.current) {
+    display: none;
+  }
+}

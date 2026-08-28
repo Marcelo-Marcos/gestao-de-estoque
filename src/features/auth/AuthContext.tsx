@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { readJson, removeKey, storageKey, writeJson } from '@/shared/lib/storage'
 import * as authApi from './api'
 import type { Credentials, Result, User } from './types'
 
-const STORAGE_KEY = 'gv.session'
+const STORAGE_KEY = storageKey('session')
 
 interface AuthContextValue {
   user: User | null
@@ -15,41 +16,12 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-/**
- * Acesso ao storage sempre protegido: em navegador com dados de site
- * bloqueados, em aba anônima ou dentro de um iframe restrito, até ler
- * `window.localStorage` lança exceção. A sessão é uma conveniência — falhar
- * ao gravá-la nunca pode derrubar o login.
- */
-function withStore<T>(kind: 'local' | 'session', action: (store: Storage) => T): T | null {
-  try {
-    const store = kind === 'local' ? window.localStorage : window.sessionStorage
-    return action(store)
-  } catch {
-    return null
-  }
-}
-
-/** Lê a sessão de onde ela tiver sido gravada, sem quebrar se estiver corrompida. */
+/** Lê a sessão de onde ela tiver sido gravada, em qualquer um dos dois storages. */
 function readStoredUser(): User | null {
-  for (const kind of ['local', 'session'] as const) {
-    const user = withStore(kind, (store) => {
-      const raw = store.getItem(STORAGE_KEY)
-      if (!raw) return null
-
-      try {
-        return JSON.parse(raw) as User
-      } catch {
-        // Registro corrompido: descarta para não travar todo acesso futuro.
-        store.removeItem(STORAGE_KEY)
-        return null
-      }
-    })
-
-    if (user) return user
-  }
-
-  return null
+  return (
+    readJson<User | null>(STORAGE_KEY, null, 'local') ??
+    readJson<User | null>(STORAGE_KEY, null, 'session')
+  )
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -67,9 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (result.data) {
       // "Manter conectado" decide apenas onde a sessão vive: localStorage
       // sobrevive ao fechar o navegador, sessionStorage não.
-      withStore(remember ? 'local' : 'session', (store) =>
-        store.setItem(STORAGE_KEY, JSON.stringify(result.data)),
-      )
+      writeJson(STORAGE_KEY, result.data, remember ? 'local' : 'session')
       setUser(result.data)
     }
 
@@ -77,8 +47,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signOut = useCallback(() => {
-    withStore('local', (store) => store.removeItem(STORAGE_KEY))
-    withStore('session', (store) => store.removeItem(STORAGE_KEY))
+    removeKey(STORAGE_KEY, 'local')
+    removeKey(STORAGE_KEY, 'session')
     setUser(null)
   }, [])
 

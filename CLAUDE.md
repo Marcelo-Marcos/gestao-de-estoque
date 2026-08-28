@@ -20,6 +20,19 @@ repetidas a cada pedido:
 Consequência prática: um componente novo nunca declara `#hex`, `rgb()` ou
 `hsl()`. Se falta um token para o que você precisa, crie o token.
 
+## Filtros e buscas são lembrados
+
+Todo filtro, busca, ordenação ou aba selecionada é gravado em `localStorage`
+e restaurado ao abrir o app. Quem fechou o sistema no meio de uma conferência
+volta exatamente onde estava, sem refazer a seleção.
+
+Use `usePersistedState` (em `shared/hooks/`) — ele já trata storage bloqueado e
+registro corrompido. Nunca chame `localStorage` direto num componente.
+
+Contrapartida obrigatória: um filtro restaurado precisa ser **visível e fácil de
+desfazer**. Uma lista filtrada que parece a lista inteira é pior do que não
+lembrar nada — mostre o que está ativo e ofereça um jeito de limpar.
+
 ## Semântica de cor de validade
 
 Estas cores carregam significado de negócio e **não** podem ser reusadas como
@@ -46,6 +59,22 @@ src/
   shared/     ui/ (design system), lib/ (helpers puros)
   styles/     tokens.css, global.css
 ```
+
+## Tamanho de arquivo e modularização
+
+Arquivo grande é caro de ler e de manter. Diretrizes, não dogma:
+
+- **Componente acima de ~150 linhas** ou com 3+ responsabilidades: quebre por
+  **comportamento**, não por tamanho. Um assistente de várias etapas vira uma
+  etapa por arquivo, mais um hook com a máquina de estados.
+- **Lógica sai do componente.** Busca de dados, validação e transformação vão
+  para hooks ou funções puras; o componente cuida de desenhar.
+- **Se dois lugares repetem a mesma lógica**, ela vira um módulo em `shared/`.
+- Um arquivo longo por ser uma lista de dados (ícones, tokens, tabela de
+  constantes) está tudo bem — o problema é lógica misturada, não linhas.
+
+Ao terminar uma feature, olhe os arquivos que ela criou: se algum passou de
+~200 linhas, provavelmente há um hook ou um subcomponente querendo sair.
 
 ## Estado do back-end
 

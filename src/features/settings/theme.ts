@@ -1,5 +1,7 @@
 /** Tipos e leitura/gravação da preferência de tema. Sem React. */
 
+import { readJson, storageKey, writeJson } from '@/shared/lib/storage'
+
 export type ThemeMode = 'dark' | 'light' | 'system'
 export type AccentName = 'azul' | 'verde' | 'roxo' | 'laranja' | 'grafite'
 
@@ -25,7 +27,7 @@ export const THEME_MODES: Array<{ value: ThemeMode; label: string }> = [
   { value: 'system', label: 'Do sistema' },
 ]
 
-const STORAGE_KEY = 'gv.appearance'
+const STORAGE_KEY = storageKey('appearance')
 
 function isAccent(value: unknown): value is AccentName {
   return ACCENTS.some((a) => a.value === value)
@@ -36,30 +38,20 @@ function isMode(value: unknown): value is ThemeMode {
 }
 
 export function readAppearance(): Appearance {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw) return DEFAULT_APPEARANCE
+  const stored = readJson<unknown>(STORAGE_KEY, null)
+  if (typeof stored !== 'object' || stored === null) return DEFAULT_APPEARANCE
 
-    const parsed: unknown = JSON.parse(raw)
-    if (typeof parsed !== 'object' || parsed === null) return DEFAULT_APPEARANCE
-
-    const { mode, accent } = parsed as Record<string, unknown>
-    return {
-      mode: isMode(mode) ? mode : DEFAULT_APPEARANCE.mode,
-      accent: isAccent(accent) ? accent : DEFAULT_APPEARANCE.accent,
-    }
-  } catch {
-    // Storage bloqueado ou registro corrompido: o padrão sempre serve.
-    return DEFAULT_APPEARANCE
+  // Valida campo a campo: um tema removido numa versão futura não pode deixar
+  // a interface sem cor nenhuma.
+  const { mode, accent } = stored as Record<string, unknown>
+  return {
+    mode: isMode(mode) ? mode : DEFAULT_APPEARANCE.mode,
+    accent: isAccent(accent) ? accent : DEFAULT_APPEARANCE.accent,
   }
 }
 
 export function writeAppearance(appearance: Appearance): void {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(appearance))
-  } catch {
-    // Não poder lembrar a preferência não pode impedir de aplicá-la agora.
-  }
+  writeJson(STORAGE_KEY, appearance)
 }
 
 /** 'system' precisa virar um valor concreto: o CSS só conhece dark e light. */
