@@ -1,0 +1,163 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* A grade é definida uma vez e reusada pelo cabeçalho e pelas linhas, para
+   as colunas não saírem do eixo. */
+.row {
+  display: grid;
+  grid-template-columns: 150px 90px 1fr 44px;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-4);
+}
+
+.head {
+  composes: row;
+  height: 40px;
+  flex-shrink: 0;
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.scroller {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+}
+
+.item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+}
+
+.itemInner {
+  composes: row;
+  height: 100%;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.item:hover .itemInner {
+  background: var(--surface-hover);
+}
+
+.barcode {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.barcodeIcon {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+.semBarras {
+  font-family: var(--font-ui);
+  color: var(--text-subtle);
+  font-style: italic;
+}
+
+.sku {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.description {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+}
+
+.editButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-subtle);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.editButton:hover {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+/* ---- Celular: a grade de 4 colunas não cabe; a linha vira um cartão ----- */
+@media (max-width: 719px) {
+  .head {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: 1fr auto;
+    gap: var(--sp-1) var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    align-items: start;
+  }
+
+  .itemInner {
+    grid-template-areas:
+      'desc  edit'
+      'sku   edit'
+      'barra edit';
+  }
+
+  .description {
+    grid-area: desc;
+    white-space: normal;
+    font-weight: 500;
+  }
+
+  .sku {
+    grid-area: sku;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+
+  .barcode {
+    grid-area: barra;
+  }
+
+  .editButton {
+    grid-area: edit;
+    align-self: center;
+    width: var(--touch-target);
+    height: var(--touch-target);
+  }
+}

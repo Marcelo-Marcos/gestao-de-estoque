@@ -1,0 +1,49 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* A forma acompanha a cor: quem não distingue as cores ainda lê o rótulo,
+   e a borda diferencia os tons em tela sob sol forte. */
+.novo {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+  color: var(--ok-text);
+}
+
+.existente {
+  background: var(--unknown-soft);
+  border-color: var(--unknown);
+  color: var(--unknown-text);
+}
+
+.duplicado {
+  background: var(--warning-soft);
+  border-color: var(--warning);
+  color: var(--warning-text);
+}
+
+.invalido {
+  background: var(--expired-soft);
+  border-color: var(--expired);
+  color: var(--expired-text);
+}
+
+.neutro {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.marca {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
+}

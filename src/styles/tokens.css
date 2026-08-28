@@ -1,38 +1,46 @@
 /*
  * Design tokens — Gestão de Validades
- * Nomeados por função, nunca por aparência. Trocar de tema = trocar valores,
- * não escrever um segundo CSS.
+ *
+ * Regras (ver CLAUDE.md):
+ * - Nenhum componente escreve cor direto. Tudo sai daqui.
+ * - Dark é o padrão do sistema; claro é escolha explícita do usuário.
+ * - O acento é trocável sem tocar em nenhum componente.
+ *
+ * Por isso o :root carrega o tema escuro completo, e [data-theme="light"]
+ * redefine os mesmos nomes. Trocar de tema é trocar valores, nunca escrever
+ * um segundo CSS.
  */
+
 :root {
-  /* ---- Superfícies e texto -------------------------------------------- */
+  /* ---- Superfícies e texto (tema escuro, padrão) ----------------------- */
   --bg: #0d1014;
   --bg-elevated: #12161d;
   --surface: #161a21;
   --surface-hover: #1d222b;
+  --surface-sunken: #0a0d11;
   --text: #e6e9ef;
   --text-muted: #949aa8;
   --text-subtle: #6b7280;
+  --text-inverse: #0d1014;
   --border: rgb(255 255 255 / 0.09);
   --border-strong: rgb(255 255 255 / 0.16);
+  --overlay: rgb(3 5 8 / 0.72);
 
-  /* ---- Marca ----------------------------------------------------------- */
-  --brand: #3b82f6;
-  --brand-hover: #2f74e0;
-  --brand-soft: rgb(59 130 246 / 0.12);
-  --brand-ring: rgb(59 130 246 / 0.4);
-
-  /* ---- Semântica de validade (a assinatura do produto) ------------------
-   * Estas cores carregam significado de negócio e não devem ser reusadas
-   * como decoração: vermelho = vencido, âmbar = vence em breve, verde = ok.
+  /* ---- Semântica de validade -------------------------------------------
+   * Carregam significado de negócio; não usar como decoração.
    */
   --expired: #e5484d;
-  --expired-soft: rgb(229 72 77 / 0.12);
+  --expired-soft: rgb(229 72 77 / 0.14);
+  --expired-text: #ff9ea1;
   --warning: #f0a726;
-  --warning-soft: rgb(240 167 38 / 0.12);
+  --warning-soft: rgb(240 167 38 / 0.14);
+  --warning-text: #f5c26b;
   --ok: #30a46c;
-  --ok-soft: rgb(48 164 108 / 0.12);
+  --ok-soft: rgb(48 164 108 / 0.14);
+  --ok-text: #6ddba2;
   --unknown: #6e7681;
-  --unknown-soft: rgb(110 118 129 / 0.12);
+  --unknown-soft: rgb(110 118 129 / 0.14);
+  --unknown-text: #a8b0bd;
 
   /* ---- Espaçamento: escala de 4px, sem valores fora dela ---------------- */
   --sp-1: 4px;
@@ -48,6 +56,7 @@
 
   /* ---- Tipografia: escala fechada --------------------------------------- */
   --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
   --fs-xs: 12px;
   --fs-sm: 14px;
   --fs-md: 16px;
@@ -73,6 +82,100 @@
   --dur-base: 200ms;
   --dur-slow: 320ms;
 
-  /* Alvo de toque mínimo confortável no celular. */
   --touch-target: 44px;
+  --header-height: 60px;
+  --sidebar-width: 264px;
+}
+
+/* ---- Tema claro ---------------------------------------------------------
+ * Redefine só os tokens de cor. Nenhuma regra de componente vive aqui.
+ */
+:root[data-theme='light'] {
+  --bg: #f6f7f9;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #eef0f4;
+  --surface-sunken: #eceef2;
+  --text: #171a20;
+  --text-muted: #5b6472;
+  --text-subtle: #838c9b;
+  --text-inverse: #ffffff;
+  --border: rgb(16 22 34 / 0.12);
+  --border-strong: rgb(16 22 34 / 0.22);
+  --overlay: rgb(16 22 34 / 0.45);
+
+  /* Tons mais fechados: os do escuro perdem contraste sobre fundo claro. */
+  --expired: #d13438;
+  --expired-soft: rgb(209 52 56 / 0.1);
+  --expired-text: #a5262a;
+  --warning: #b7791f;
+  --warning-soft: rgb(183 121 31 / 0.12);
+  --warning-text: #8a5a13;
+  --ok: #1a7f4b;
+  --ok-soft: rgb(26 127 75 / 0.1);
+  --ok-text: #14633a;
+  --unknown: #6e7681;
+  --unknown-soft: rgb(110 118 129 / 0.1);
+  --unknown-text: #545c68;
+
+  --shadow-1: 0 1px 2px rgb(16 22 34 / 0.08);
+  --shadow-2: 0 4px 12px rgb(16 22 34 / 0.1);
+  --shadow-3: 0 16px 48px rgb(16 22 34 / 0.16);
+}
+
+/* ---- Acento -------------------------------------------------------------
+ * Trocar a identidade do sistema é trocar o data-accent na raiz. Nenhum
+ * componente sabe qual é a cor: todos leem --brand.
+ */
+:root,
+:root[data-accent='azul'] {
+  --brand: #3b82f6;
+  --brand-hover: #2f74e0;
+  --brand-soft: rgb(59 130 246 / 0.14);
+  --brand-ring: rgb(59 130 246 / 0.4);
+  --brand-contrast: #ffffff;
+}
+
+:root[data-accent='verde'] {
+  --brand: #12a150;
+  --brand-hover: #0e8843;
+  --brand-soft: rgb(18 161 80 / 0.14);
+  --brand-ring: rgb(18 161 80 / 0.4);
+  --brand-contrast: #ffffff;
+}
+
+:root[data-accent='roxo'] {
+  --brand: #7c5cf0;
+  --brand-hover: #6a49dd;
+  --brand-soft: rgb(124 92 240 / 0.14);
+  --brand-ring: rgb(124 92 240 / 0.4);
+  --brand-contrast: #ffffff;
+}
+
+:root[data-accent='laranja'] {
+  --brand: #e2620f;
+  --brand-hover: #c8540b;
+  --brand-soft: rgb(226 98 15 / 0.14);
+  --brand-ring: rgb(226 98 15 / 0.4);
+  --brand-contrast: #ffffff;
+}
+
+:root[data-accent='grafite'] {
+  --brand: #4b5563;
+  --brand-hover: #3b4351;
+  --brand-soft: rgb(75 85 99 / 0.16);
+  --brand-ring: rgb(75 85 99 / 0.45);
+  --brand-contrast: #ffffff;
+}
+
+/* No tema claro o azul e o roxo precisam fechar um pouco para o texto branco
+   do botão manter contraste suficiente. */
+:root[data-theme='light'][data-accent='azul'] {
+  --brand: #2563eb;
+  --brand-hover: #1d4fd7;
+}
+
+:root[data-theme='light'][data-accent='roxo'] {
+  --brand: #6941d6;
+  --brand-hover: #5a35c0;
 }

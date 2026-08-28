@@ -1,0 +1,213 @@
+.shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  /* Altura fixa, não mínima: as listas rolam *dentro* do conteúdo. Com
+     min-height o shell cresceria junto com a lista, o container de rolagem
+     ficaria do tamanho de todos os itens e a virtualização deixaria de ter
+     efeito — o navegador desenharia as 26 mil linhas de uma vez. */
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+@media (min-width: 900px) {
+  .shell {
+    grid-template-columns: var(--sidebar-width) 1fr;
+  }
+}
+
+/* ---- Barra lateral ------------------------------------------------------ */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  padding: var(--sp-4);
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
+}
+
+/* No celular ela é uma gaveta sobre o conteúdo, não uma coluna. */
+@media (max-width: 899px) {
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 30;
+    width: min(280px, 86vw);
+    padding-top: calc(var(--sp-4) + env(safe-area-inset-top));
+    transform: translateX(-100%);
+    transition: transform var(--dur-base) var(--ease-out);
+    box-shadow: var(--shadow-3);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+}
+
+.brand {
+  padding: var(--sp-2);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-target);
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.navItem:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.navItemActive {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.navLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.navSoon {
+  margin-left: auto;
+  flex-shrink: 0;
+  /* Sem isto o rótulo quebra em "em / breve" na largura da barra lateral. */
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-subtle);
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--border);
+}
+
+.user {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 var(--sp-2);
+  min-width: 0;
+}
+
+.userName {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userRole {
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+}
+
+.sidebarActions {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: var(--overlay);
+  border: none;
+  animation: fade var(--dur-fast) var(--ease-out);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 900px) {
+  .scrim {
+    display: none;
+  }
+}
+
+/* ---- Conteúdo ----------------------------------------------------------- */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  /* min-height: 0 permite que este filho de grid encolha abaixo do conteúdo,
+     que é o que faz a rolagem interna acontecer em vez de esticar a página. */
+  min-height: 0;
+  overflow: hidden;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  height: var(--header-height);
+  padding: 0 var(--sp-4);
+  padding-top: env(safe-area-inset-top);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+@media (min-width: 900px) {
+  .topbar {
+    display: none;
+  }
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.iconButton:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

@@ -1,7 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ForgotPasswordPage, LoginPage, ResetPasswordPage } from '@/features/auth'
+import { ProductsPage } from '@/features/products'
+import { AppShell } from './AppShell'
 import { RequireAuth } from './RequireAuth'
-import { PlaceholderHome } from './PlaceholderHome'
 
 export function AppRoutes() {
   return (
@@ -11,10 +12,13 @@ export function AppRoutes() {
       <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
 
       <Route element={<RequireAuth />}>
-        <Route path="/" element={<PlaceholderHome />} />
+        <Route element={<AppShell />}>
+          <Route path="/produtos" element={<ProductsPage />} />
+        </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/" element={<Navigate to="/produtos" replace />} />
+      <Route path="*" element={<Navigate to="/produtos" replace />} />
     </Routes>
   )
 }

@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
 import { AuthProvider } from '@/features/auth'
+import { AppearanceProvider } from '@/features/settings'
 import { AppRoutes } from '@/app/routes'
 import './styles/global.css'
 
@@ -18,9 +19,11 @@ if (!container) throw new Error('Elemento #root não encontrado no index.html')
 createRoot(container).render(
   <StrictMode>
     <Router>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <AppearanceProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </AppearanceProvider>
     </Router>
   </StrictMode>,
 )
