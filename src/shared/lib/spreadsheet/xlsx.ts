@@ -7,11 +7,11 @@
  * (que traria escrita, fórmulas, gráficos e dependências vulneráveis) para
  * fazer leitura de texto e número.
  *
- * Ainda não interpretamos datas: uma célula de data volta como o número de
- * série do Excel. Nenhuma coluna do cadastro de produtos é data; quando a
- * importação de vencimentos chegar, a conversão entra aqui.
+ * Datas são reconhecidas pelo formato da célula e devolvidas como texto ISO
+ * (`2026-03-29`); ver `dates.ts` para o porquê desse caminho indireto.
  */
 import { unzipSync, strFromU8 } from 'fflate'
+import { buildDateStyleIndex, serialToIso } from './dates'
 import { SpreadsheetError, type CellValue, type SheetData } from './types'
 
 const parser = new DOMParser()
@@ -82,7 +82,15 @@ function findFirstSheet(files: Record<string, Uint8Array>): { path: string; name
   return { path: fallback, name }
 }
 
-function cellValue(cell: Element, sharedStrings: string[]): CellValue {
+interface CellContext {
+  sharedStrings: string[]
+  /** Índices de estilo que o arquivo marca como data. */
+  dateStyles: Set<number>
+  /** Arquivos do Mac antigo contam os dias a partir de 1904. */
+  date1904: boolean
+}
+
+function cellValue(cell: Element, ctx: CellContext): CellValue {
   const type = cell.getAttribute('t')
 
   if (type === 'inlineStr') {
@@ -98,7 +106,7 @@ function cellValue(cell: Element, sharedStrings: string[]): CellValue {
   switch (type) {
     case 's': {
       const index = Number(raw)
-      return sharedStrings[index] ?? null
+      return ctx.sharedStrings[index] ?? null
     }
     case 'b':
       return raw === '1'
@@ -109,7 +117,16 @@ function cellValue(cell: Element, sharedStrings: string[]): CellValue {
       return raw
     default: {
       const num = Number(raw)
-      return Number.isNaN(num) ? raw : num
+      if (Number.isNaN(num)) return raw
+
+      // Número em célula formatada como data: converte, senão a validade
+      // chegaria como 46110 em vez de 29/03/2026.
+      const styleIndex = Number(cell.getAttribute('s') ?? -1)
+      if (ctx.dateStyles.has(styleIndex)) {
+        return serialToIso(num, ctx.date1904) ?? num
+      }
+
+      return num
     }
   }
 }
@@ -128,6 +145,15 @@ export function readXlsx(buffer: ArrayBuffer): SheetData {
   const { path, name } = findFirstSheet(files)
   const doc = parseXml(files[path], path)
 
+  const styles = files['xl/styles.xml'] ? parseXml(files['xl/styles.xml'], 'styles.xml') : null
+  const workbook = parseXml(files['xl/workbook.xml'], 'workbook.xml')
+
+  const ctx: CellContext = {
+    sharedStrings,
+    dateStyles: buildDateStyleIndex(styles),
+    date1904: workbook.getElementsByTagName('workbookPr')[0]?.getAttribute('date1904') === '1',
+  }
+
   const matrix: CellValue[][] = []
   let width = 0
 
@@ -142,7 +168,7 @@ export function readXlsx(buffer: ArrayBuffer): SheetData {
       if (index < 0) continue
 
       while (values.length < index) values.push(null)
-      values[index] = cellValue(cell, sharedStrings)
+      values[index] = cellValue(cell, ctx)
     }
 
     width = Math.max(width, values.length)
