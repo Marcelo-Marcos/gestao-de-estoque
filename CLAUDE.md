@@ -55,12 +55,16 @@ Dois perfis, definidos em `features/auth/types.ts`:
 | Perfil | Pode |
 |---|---|
 | `admin` | tudo: alimentar o cadastro de produtos (importar planilha, criar, editar, excluir) e registrar quebras |
-| `operador` | **consultar** o cadastro de produtos e registrar quebras — não altera a base |
+| `operador` | registrar quebras e **consultar** produtos de dentro do registro — não altera a base |
 
 O cadastro de produtos é a base que todo registro de quebra consulta, então
-**todos leem**; só o administrador escreve. Uma tela que oferece uma ação que o
-perfil não pode executar é pior que não oferecer: o usuário só descobre no erro.
-Esconda a ação, não a bloqueie no clique.
+**todos leem**; só o administrador escreve. A tela do cadastro, porém, é do
+administrador: o operador alcança os produtos pela busca dentro do registro, e
+não por um item de menu (ver `docs/dominio.md`).
+
+Uma tela que oferece uma ação que o perfil não pode executar é pior que não
+oferecer: o usuário só descobre no erro. Esconda a ação, não a bloqueie no
+clique.
 
 Enquanto não há servidor isso é só interface. Quando ele existir, a permissão
 tem que ser verificada no servidor também — esconder o botão não é segurança.
