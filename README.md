@@ -1,8 +1,11 @@
 # Gestão de Validades
 
-Ferramenta complementar ao ERP para controlar **validade de produtos** — recurso que o
-ERP atual da empresa não oferece. Importa planilhas de saldo e saída do ERP, casa os
-produtos pelo código, e sinaliza o que está vencido ou perto de vencer.
+Controle de **validade de produtos** para lojas cujo ERP não tem esse recurso.
+Importa a planilha exportada do ERP, reconhece as colunas sozinho, traz apenas os
+produtos que ainda não existem no cadastro e sinaliza o que está vencido ou perto
+de vencer.
+
+Feito com React, TypeScript e Vite, sem framework de UI: o design system é próprio.
 
 ## Estado atual
 
@@ -10,14 +13,27 @@ Em construção. Front-end primeiro, regras de negócio depois.
 
 | Etapa | Situação |
 |---|---|
-| Autenticação (login, recuperação de senha) | pronta, com dados simulados |
-| Cadastro de produtos | a fazer |
-| Importação de planilha do ERP | a fazer |
+| Autenticação (login, recuperação de senha) | pronta |
+| Cadastro de produtos, com busca em 26 mil registros | pronto |
+| Importação de planilha (.xlsx e .csv) | pronta |
+| Temas escuro e claro, com acento trocável | pronto |
 | Painel de validades e alertas | a fazer |
 | Leitura de código de barras pela câmera | a fazer |
+| Envio de alerta por e-mail | a fazer |
 
-> **Sem back-end ainda.** `src/features/auth/api.ts` resolve tudo em memória para permitir
-> validar as telas. Quando o servidor existir, só esse arquivo muda.
+> **Sem back-end ainda.** Cada feature isola o acesso a dados no seu `api.ts`, hoje
+> resolvido em memória, para as telas serem construídas e validadas antes do servidor
+> existir. Quando ele existir, só esses arquivos mudam.
+
+## Pontos técnicos que valem uma olhada
+
+| Onde | O quê |
+|---|---|
+| `shared/lib/spreadsheet/` | Leitor próprio de `.xlsx`, sobre `fflate` mais o interpretador de XML do navegador. A biblioteca mais usada tem prototype pollution e ReDoS na versão publicada no npm, e as alternativas trazem dependência vulnerável |
+| `shared/lib/spreadsheet/csv.ts` | CSV tolerante ao que sai de ERP brasileiro: separador por ponto e vírgula, codificação Windows-1252 e campos entre aspas |
+| `features/products/import/columns.ts` | Reconhece as colunas pelo cabeçalho e, quando ele não basta, pelo conteúdo — 13 dígitos indicam código de barras |
+| `features/products/components/ProductsTable.tsx` | Lista virtualizada que mede a própria linha: 26 mil produtos com cerca de 20 nós no DOM |
+| `styles/tokens.css` | Toda cor, espaço e tipografia. Trocar tema ou identidade visual é trocar valores aqui |
 
 ## Rodando
 
@@ -26,13 +42,13 @@ npm install
 npm run dev
 ```
 
-Contas de teste: `admin@belatintas.com.br` ou `operador@belatintas.com.br`, senha `senha123`.
+Contas de teste: `admin@exemplo.com.br` ou `operador@exemplo.com.br`, senha `senha123`.
 
 | Comando | O que faz |
 |---|---|
 | `npm run dev` | servidor de desenvolvimento |
 | `npm run build` | build de produção em `dist/` |
-| `npm run lint` | checagem de tipos |
+| `npm run lint` | tipos, código e CSS — o mesmo que roda antes de cada commit |
 
 ## Estrutura
 

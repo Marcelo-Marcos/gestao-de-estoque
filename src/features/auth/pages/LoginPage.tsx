@@ -14,6 +14,13 @@ interface FieldErrors {
   password?: string
 }
 
+/**
+ * Tela de entrada.
+ *
+ * A mensagem de erro é a mesma para e-mail inexistente e senha errada (ver
+ * `api.ts`): distinguir os dois transformaria esta tela numa forma de
+ * descobrir quais e-mails estão cadastrados.
+ */
 export function LoginPage() {
   const { user, signIn } = useAuth()
   const navigate = useNavigate()
@@ -68,6 +75,9 @@ export function LoginPage() {
 
   return (
     <AuthLayout title="Entrar" subtitle="Acesse o painel de validades da sua loja.">
+      {/* noValidate desliga a validação do navegador: as mensagens dele são
+          em inglês, aparecem em balões que somem sozinhos e não seguem o
+          tema. A validação daqui fica ao lado do campo e permanece na tela. */}
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         {formError && <Alert tone="danger">{formError}</Alert>}
 
@@ -130,9 +140,9 @@ export function LoginPage() {
 
       <p className={styles.demo}>
         <span className={styles.demoTitle}>Contas de teste (enquanto não há servidor)</span>
-        Administrador: <code>admin@belatintas.com.br</code>
+        Administrador: <code>admin@exemplo.com.br</code>
         <br />
-        Operador: <code>operador@belatintas.com.br</code>
+        Operador: <code>operador@exemplo.com.br</code>
         <br />
         Senha: <code>senha123</code>
       </p>

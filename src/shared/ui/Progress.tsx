@@ -6,6 +6,15 @@ interface ProgressProps {
   label: string
 }
 
+/**
+ * Barra de progresso com o número ao lado.
+ *
+ * A porcentagem sozinha não diz o tamanho do trabalho: "38%" de uma importação
+ * pode ser 4 ou 4 mil linhas. Por isso a contagem aparece junto.
+ *
+ * O `role="progressbar"` com os valores em aria faz o leitor de tela anunciar
+ * o avanço — uma barra puramente visual não existe para quem não a vê.
+ */
 export function Progress({ value, max, label }: ProgressProps) {
   const percent = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0
 

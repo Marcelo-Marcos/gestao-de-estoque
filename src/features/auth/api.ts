@@ -13,15 +13,15 @@ const LATENCY_MS = 700
 const DEMO_ACCOUNTS: Array<User & { password: string; disabled?: boolean }> = [
   {
     id: '1',
-    name: 'Marcelo Marcos',
-    email: 'admin@belatintas.com.br',
+    name: 'Ana Ribeiro',
+    email: 'admin@exemplo.com.br',
     role: 'admin',
     password: 'senha123',
   },
   {
     id: '2',
-    name: 'Operador Loja 32',
-    email: 'operador@belatintas.com.br',
+    name: 'Carlos Menezes',
+    email: 'operador@exemplo.com.br',
     role: 'operador',
     password: 'senha123',
   },

@@ -20,6 +20,12 @@ interface FieldErrors {
   confirmation?: string
 }
 
+/**
+ * Criação de uma nova senha, alcançada pelo link enviado por e-mail.
+ *
+ * O token vem no endereço; quem chega aqui sem ele (ou com um expirado) recebe
+ * o erro só ao enviar, porque é o servidor que sabe se o token vale.
+ */
 export function ResetPasswordPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -67,6 +73,9 @@ export function ResetPasswordPage() {
     setDone(true)
   }
 
+  // Tela de confirmação. Substitui o formulário em vez de virar um aviso
+  // acima dele: depois de trocar a senha não há mais nada a preencher aqui, e
+  // deixar os campos na tela convidaria a tentar de novo.
   if (done) {
     return (
       <AuthLayout title="Senha alterada">

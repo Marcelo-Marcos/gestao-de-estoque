@@ -8,12 +8,26 @@ interface AuthLayoutProps {
   children: ReactNode
 }
 
+/**
+ * Legenda da faixa de validade, mostrada no painel lateral do login.
+ *
+ * Ensina o código de cores antes do primeiro acesso: quando a pessoa chega às
+ * listas, vermelho, âmbar e verde já significam alguma coisa. Sem isso, a cor
+ * viraria decoração até alguém explicar.
+ */
 const LEGEND = [
   { color: 'var(--expired)', label: 'Vencido', text: 'já passou da data' },
   { color: 'var(--warning)', label: 'Vence em breve', text: 'dentro do prazo de alerta' },
   { color: 'var(--ok)', label: 'Dentro do prazo', text: 'gira antes de vencer' },
 ]
 
+/**
+ * Moldura das telas de autenticação (entrar, recuperar senha, criar senha).
+ *
+ * Divide em duas colunas no desktop: apresentação à esquerda, formulário à
+ * direita. No celular a apresentação some — ali o objetivo é entrar, e rolar
+ * texto institucional antes do campo de e-mail só atrapalha.
+ */
 export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
   return (
     <div className={styles.page}>

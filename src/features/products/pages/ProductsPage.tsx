@@ -12,15 +12,28 @@ import { useProductList } from '../hooks/useProductList'
 import type { Product } from '../types'
 import styles from './ProductsPage.module.css'
 
+/**
+ * Tela do cadastro de produtos.
+ *
+ * Só compõe: a busca dos dados e o estado dos filtros vivem em
+ * `useProductList`, e cada pedaço visual é um componente à parte. O que sobra
+ * aqui é decidir qual dos quatro estados aparece — carregando, erro, vazio ou
+ * lista — e quais diálogos estão abertos.
+ */
 export function ProductsPage() {
   const list = useProductList()
   const isNarrow = useMediaQuery('(max-width: 719px)')
+
+  // Altura provável de uma linha, usada pelo esqueleto de carregamento e como
+  // estimativa inicial da lista virtualizada. No celular a linha é mais alta
+  // porque o nome do produto quebra em várias linhas.
   const rowHeight = isNarrow ? 118 : 52
 
   const [editing, setEditing] = useState<Product | null>(null)
   const [formOpen, setFormOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
 
+  /** `null` abre o formulário em branco; um produto abre em edição. */
   function openForm(product: Product | null) {
     setEditing(product)
     setFormOpen(true)
@@ -66,6 +79,9 @@ export function ProductsPage() {
         onClear={list.clearFilters}
       />
 
+      {/* Os quatro estados de uma tela que busca dados. Nenhum pode faltar:
+          sem o de erro, uma falha de rede deixaria a tela em branco sem
+          explicação. */}
       {list.status === 'loading' && <ProductsSkeleton rowHeight={rowHeight} />}
 
       {list.status === 'error' && <ProductsErrorState onRetry={list.reload} />}

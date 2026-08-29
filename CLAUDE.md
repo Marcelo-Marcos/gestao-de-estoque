@@ -2,6 +2,34 @@
 
 Ferramenta complementar ao ERP para controle de validade de produtos.
 
+Também é **portfólio**: o autor está estudando para atuar como desenvolvedor
+full stack. Na prática isso significa que o código é lido por gente avaliando
+quem o escreveu — clareza vale tanto quanto funcionar, e uma solução simples e
+bem explicada vale mais que uma esperta e obscura.
+
+Consequência: o projeto não cita nenhuma empresa real. Dados de exemplo,
+e-mails de teste e nomes de produto são fictícios.
+
+## Comentários em português do Brasil
+
+Todo comentário é escrito em **português do Brasil**, sem exceção.
+
+Comente o **porquê**, não o quê. `// incrementa o contador` acima de `i++` é
+ruído; o que ajuda é a razão que não está no código:
+
+```ts
+// Sem espera, cada tecla dispararia uma varredura de 26 mil registros.
+const debouncedSearch = useDebouncedValue(filters.search, 250)
+```
+
+Registre também a decisão e o que ela evita — sobretudo quando o código parece
+estranho à primeira vista. Quem lê daqui a seis meses (ou numa entrevista)
+precisa entender por que aquilo está ali.
+
+Continuam em inglês, por convenção da linguagem e das bibliotecas: nomes de
+variáveis, funções, tipos, arquivos e chaves de objeto. O comentário explica;
+o identificador nomeia.
+
 ## Regras permanentes de interface
 
 Valem para **toda** tela criada neste projeto, sem exceção e sem precisar ser
