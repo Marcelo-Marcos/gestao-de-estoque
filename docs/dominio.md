@@ -85,14 +85,77 @@ o tempo todo — e aviso que aparece sempre vira aviso que ninguém lê. Em pouc
 semanas o operador dispensaria por hábito, inclusive quando fosse duplicidade
 real.
 
-Repetição continua legítima e esperada: o mesmo produto pode ter unidades
-vencidas e unidades danificadas, ou dois lotes com validades diferentes.
+Repetição continua legítima e esperada, e não só por motivo diferente: o mesmo
+produto, com o mesmo motivo, pode voltar a acontecer. A loja recebe mercadoria
+vencida e anexa o e-mail daquela divergência; semanas depois o mesmo material
+chega vencido de novo, com outro e-mail. São **duas ocorrências**, cada uma com
+seu documento — juntar as duas num registro só perderia a prova de cada uma.
+
+Por isso o aviso é informativo: ele mostra o que já existe para a pessoa
+**entender** se aquilo é a mesma ocorrência ou outra.
+
+## Anexos
+
+Um registro guarda:
+
+- **Foto** do produto e da etiqueta do lote, como no app anterior.
+- **Documento da ocorrência** — o e-mail da divergência com o CD, por exemplo.
+  É a prova que sustenta a cobrança, e é por ocorrência, não por produto.
+
+## De onde vêm saldo e saídas
+
+Três fontes, para os mesmos dois números:
+
+| Dado | Como chega |
+|---|---|
+| **Estoque** (saldo) | importação do CSV de estoque total da loja, ou digitado |
+| **Saídas** | importação de um segundo CSV, de outro relatório, ou digitado |
+
+São relatórios distintos do ERP, importados separadamente. O usuário trata o
+arquivo antes se precisar. Os dois campos continuam editáveis à mão: o número
+importado é ponto de partida, não verdade intocável.
+
+Saldo zerado é o que diz que o item **saiu do estoque** — é assim que a tela de
+quebra sabe o que ainda está lá e o que não está.
+
+## Previsão: quanto tempo até zerar
+
+O cálculo que sustenta as situações da tela de validades:
+
+```
+média de saída por dia = saídas ÷ período
+dias para zerar        = estoque ÷ média de saída por dia
+```
+
+O **período** é configurado pelo usuário — é a janela de dias que o relatório
+de saídas cobre. Sem saídas no período não há divisão possível, e o produto
+fica **sem estimativa** em vez de receber um número inventado.
+
+Conferido contra os números do app anterior: `estoque × período ÷ saídas`
+reproduz as linhas (estoque 1, saídas 2, período 390 → 195 dias; estoque 1,
+saídas 50 → 7 dias).
+
+### As quatro situações saem daí
+
+| Situação | Quando |
+|---|---|
+| **Venceu** | a data de validade já passou |
+| **Possibilidade de vencimento** | dias para zerar **maior** que os dias até vencer — não vai vender a tempo |
+| **Chance de vender antes de vencer** | dias para zerar **menor ou igual** aos dias até vencer |
+| **Sem estimativa** | não há saídas no período, ou falta a data de validade |
+
+Situação é **calculada, nunca digitada**. Guardar o resultado deixaria a tela
+mentindo no dia seguinte, quando o produto já teria mudado de faixa sem
+ninguém mexer nele.
 
 ## A tela de quebra
 
 Para onde os itens são baixados depois de apontados. Ali o usuário administra
-**o que ainda está no estoque** e **o que já não está** — a lista aceita itens
-repetidos do mesmo produto, justamente por causa dos motivos diferentes.
+**o que ainda está no estoque** e **o que já não está** — este último saindo do
+saldo importado, que zera quando o item some.
+
+A lista aceita itens repetidos do mesmo produto, por causa dos motivos e das
+validades diferentes.
 
 ## O que veio do AppSheet e não se repete aqui
 
@@ -119,17 +182,21 @@ procurar.
 desconhecido em dias diferentes. Casar por código de barras na criação evita
 que o administrador resolva a mesma coisa duas vezes.
 
+**Lista de motivos por operador fragmenta o relatório.** É o mesmo problema que
+o cadastro de produtos sob o administrador resolve: se cada pessoa mantém a
+própria lista, "danificado", "danificada" e "avaria" viram três motivos, e a
+soma por motivo deixa de fechar. Editar a lista pode continuar sendo livre — o
+que precisa ser único é a **lista**, não quem a edita.
+
 ## Ainda em aberto
 
 Pontos que a especificação de cada tela precisa fechar:
 
 - Quais são os estados de um item na tela de quebra ("ainda no estoque",
   "retirado", …) e o que faz cada um mudar.
-- A lista de motivos e a de origens: quais valores, e se são fixas no código ou
-  mantidas numa tela.
-- O que o aviso de registro repetido oferece: somar quantidade ao existente,
-  abrir o registro existente, criar outro — quais dessas.
-- Se o registro guarda foto (o app anterior tinha foto da etiqueta do lote e do
-  produto) e se ela é obrigatória em algum motivo.
-- De onde vêm saldo e saídas: hoje só existem na planilha do ERP, não são
-  digitados.
+- Se as listas de motivo e origem são **da loja** ou **de cada operador** (ver
+  risco abaixo).
+- Quais valores começam nessas listas.
+- Se a foto e o documento são obrigatórios em algum motivo.
+- Quais são exatamente os estados na tela de quebra além de "no estoque" e
+  "fora do estoque".
