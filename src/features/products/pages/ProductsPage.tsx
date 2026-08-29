@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/shared/ui/Button'
 import { PlusIcon, UploadIcon } from '@/shared/ui/icons'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
+import { useAuth } from '@/features/auth'
 import { ImportWizard } from '../components/ImportWizard'
 import { ProductFormDialog } from '../components/ProductFormDialog'
 import { ProductsEmptyState, ProductsErrorState } from '../components/ProductsEmptyState'
@@ -23,6 +24,13 @@ import styles from './ProductsPage.module.css'
 export function ProductsPage() {
   const list = useProductList()
   const isNarrow = useMediaQuery('(max-width: 719px)')
+
+  // O cadastro é a base que todo registro de quebra consulta, então todos
+  // leem. Só o administrador alimenta (ver CLAUDE.md, "Perfis de acesso").
+  // Esconder a ação é melhor que bloqueá-la no clique: assim o operador não
+  // descobre que não pode só depois de preencher um formulário inteiro.
+  const { user } = useAuth()
+  const podeEditar = user?.role === 'admin'
 
   // Altura provável de uma linha, usada pelo esqueleto de carregamento e como
   // estimativa inicial da lista virtualizada. No celular a linha é mais alta
@@ -51,22 +59,24 @@ export function ProductsPage() {
           </span>
         </div>
 
-        <div className={styles.actions}>
-          <Button variant="secondary" onClick={() => setImportOpen(true)}>
-            <UploadIcon width={18} height={18} />
-            {/* Rótulo em um único elemento: como o botão é flex, deixar a
-                palavra extra como irmã do texto faria o gap somar ao espaço. */}
-            <span>
-              Importar<span className={styles.labelExtra}> planilha</span>
-            </span>
-          </Button>
-          <Button onClick={() => openForm(null)}>
-            <PlusIcon width={18} height={18} />
-            <span>
-              Novo<span className={styles.labelExtra}> produto</span>
-            </span>
-          </Button>
-        </div>
+        {podeEditar && (
+          <div className={styles.actions}>
+            <Button variant="secondary" onClick={() => setImportOpen(true)}>
+              <UploadIcon width={18} height={18} />
+              {/* Rótulo em um único elemento: como o botão é flex, deixar a
+                  palavra extra como irmã do texto faria o gap somar ao espaço. */}
+              <span>
+                Importar<span className={styles.labelExtra}> planilha</span>
+              </span>
+            </Button>
+            <Button onClick={() => openForm(null)}>
+              <PlusIcon width={18} height={18} />
+              <span>
+                Novo<span className={styles.labelExtra}> produto</span>
+              </span>
+            </Button>
+          </div>
+        )}
       </header>
 
       <ProductsToolbar
@@ -89,6 +99,7 @@ export function ProductsPage() {
       {list.status === 'ready' && list.products.length === 0 && (
         <ProductsEmptyState
           filtered={list.isFiltered}
+          podeImportar={podeEditar}
           onClear={list.clearFilters}
           onImport={() => setImportOpen(true)}
         />
@@ -97,20 +108,21 @@ export function ProductsPage() {
       {list.status === 'ready' && list.products.length > 0 && (
         <ProductsTable
           products={list.products}
-          onEdit={(product) => openForm(product)}
+          // Sem permissão de escrita a linha não oferece edição.
+          onEdit={podeEditar ? (product) => openForm(product) : undefined}
           estimatedRowHeight={rowHeight}
         />
       )}
 
       <ProductFormDialog
-        open={formOpen}
+        open={formOpen && podeEditar}
         product={editing}
         onClose={() => setFormOpen(false)}
         onSaved={list.reload}
       />
 
       <ImportWizard
-        open={importOpen}
+        open={importOpen && podeEditar}
         onClose={() => setImportOpen(false)}
         onImported={list.reload}
       />

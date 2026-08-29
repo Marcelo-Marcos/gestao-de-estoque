@@ -6,7 +6,8 @@ import styles from './ProductsTable.module.css'
 
 interface ProductsTableProps {
   products: Product[]
-  onEdit: (product: Product) => void
+  /** Ausente quando o perfil não pode editar: a coluna de ação some. */
+  onEdit?: (product: Product) => void
   /**
    * Altura provável de uma linha, usada só até ela ser medida de verdade.
    * Um palpite próximo do real deixa a barra de rolagem estável desde o
@@ -86,14 +87,16 @@ export function ProductsTable({ products, onEdit, estimatedRowHeight }: Products
                     {product.description}
                   </span>
 
-                  <button
-                    type="button"
-                    className={styles.editButton}
-                    onClick={() => onEdit(product)}
-                    aria-label={`Editar ${product.description}`}
-                  >
-                    <EditIcon width={18} height={18} />
-                  </button>
+                  {onEdit && (
+                    <button
+                      type="button"
+                      className={styles.editButton}
+                      onClick={() => onEdit(product)}
+                      aria-label={`Editar ${product.description}`}
+                    >
+                      <EditIcon width={18} height={18} />
+                    </button>
+                  )}
                 </div>
               </div>
             )

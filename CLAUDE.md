@@ -48,6 +48,23 @@ repetidas a cada pedido:
 Consequência prática: um componente novo nunca declara `#hex`, `rgb()` ou
 `hsl()`. Se falta um token para o que você precisa, crie o token.
 
+## Perfis de acesso
+
+Dois perfis, definidos em `features/auth/types.ts`:
+
+| Perfil | Pode |
+|---|---|
+| `admin` | tudo: alimentar o cadastro de produtos (importar planilha, criar, editar, excluir) e registrar quebras |
+| `operador` | **consultar** o cadastro de produtos e registrar quebras — não altera a base |
+
+O cadastro de produtos é a base que todo registro de quebra consulta, então
+**todos leem**; só o administrador escreve. Uma tela que oferece uma ação que o
+perfil não pode executar é pior que não oferecer: o usuário só descobre no erro.
+Esconda a ação, não a bloqueie no clique.
+
+Enquanto não há servidor isso é só interface. Quando ele existir, a permissão
+tem que ser verificada no servidor também — esconder o botão não é segurança.
+
 ## Filtros e buscas são lembrados
 
 Todo filtro, busca, ordenação ou aba selecionada é gravado em `localStorage`
@@ -103,6 +120,12 @@ Arquivo grande é caro de ler e de manter. Diretrizes, não dogma:
 
 Ao terminar uma feature, olhe os arquivos que ela criou: se algum passou de
 ~200 linhas, provavelmente há um hook ou um subcomponente querendo sair.
+
+## Domínio
+
+O que o sistema precisa fazer, e por quê, está em [`docs/dominio.md`](docs/dominio.md):
+alcance (quebra de estoque, não só validade), produto pendente de cadastro,
+registro repetido e o que veio do AppSheet como contorno e não se repete aqui.
 
 ## Estado do back-end
 

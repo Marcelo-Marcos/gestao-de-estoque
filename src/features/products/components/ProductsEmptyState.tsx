@@ -6,11 +6,18 @@ import styles from './ProductsEmptyState.module.css'
 /** Cadastro vazio e busca sem resultado pedem saídas diferentes. */
 interface EmptyStateProps {
   filtered: boolean
+  /** Só o administrador alimenta o cadastro; ao operador resta avisar. */
+  podeImportar: boolean
   onClear: () => void
   onImport: () => void
 }
 
-export function ProductsEmptyState({ filtered, onClear, onImport }: EmptyStateProps) {
+export function ProductsEmptyState({
+  filtered,
+  podeImportar,
+  onClear,
+  onImport,
+}: EmptyStateProps) {
   return (
     <div className={styles.state}>
       <span className={styles.icon}>
@@ -27,7 +34,7 @@ export function ProductsEmptyState({ filtered, onClear, onImport }: EmptyStatePr
             Limpar filtros
           </Button>
         </>
-      ) : (
+      ) : podeImportar ? (
         <>
           <p className={styles.title}>O cadastro está vazio</p>
           <p className={styles.text}>
@@ -38,6 +45,14 @@ export function ProductsEmptyState({ filtered, onClear, onImport }: EmptyStatePr
             <UploadIcon width={18} height={18} />
             Importar planilha
           </Button>
+        </>
+      ) : (
+        <>
+          <p className={styles.title}>O cadastro ainda está vazio</p>
+          <p className={styles.text}>
+            Quem carrega a base de produtos é o administrador. Assim que ele importar a
+            planilha, os produtos aparecem aqui.
+          </p>
         </>
       )}
     </div>
