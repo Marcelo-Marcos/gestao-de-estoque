@@ -102,6 +102,11 @@ Um registro guarda:
 - **Documento da ocorrência** — o e-mail da divergência com o CD, por exemplo.
   É a prova que sustenta a cobrança, e é por ocorrência, não por produto.
 
+**Nenhum é obrigatório.** A interface sugere e deixa claro que o registro fica
+incompleto sem eles, mas permite salvar. Registro incompleto é melhor que
+registro que não acontece porque o celular ficou sem bateria no corredor — e o
+que falta pode ser anexado depois.
+
 ## De onde vêm saldo e saídas
 
 Três fontes, para os mesmos dois números:
@@ -160,6 +165,23 @@ as telas discordarem entre si.
 
 A tela de validades muda a **situação** do produto; ela não mexe no saldo.
 
+### Quando o saldo zera
+
+A quantidade do registro de quebra **zera junto**. A tela passa a refletir
+exatamente o que existe no estoque, sem número sobrando de item que já saiu.
+
+Mas o registro guarda **dois números**, não um:
+
+| Campo | O que é |
+|---|---|
+| `quantidade` | quanto ainda está no estoque. Zera junto com o saldo |
+| `quantidadeApontada` | quanto foi apontado no momento do registro. Nunca muda |
+
+O segundo existe porque a pergunta "quanto perdemos por avaria em março?" tem
+que continuar respondível depois que o estoque zerou. Sem ele, o relatório do
+mês fecharia em zero justamente quando todos os itens já tivessem saído — que é
+o caso normal no fim do período.
+
 ## A tela de quebra
 
 Para onde os itens são baixados depois de apontados. Ali o usuário administra
@@ -209,6 +231,5 @@ Pontos que a especificação de cada tela precisa fechar:
 - Se as listas de motivo e origem são **da loja** ou **de cada operador** (ver
   risco abaixo).
 - Quais valores começam nessas listas.
-- Se a foto e o documento são obrigatórios em algum motivo.
-- Quais são exatamente os estados na tela de quebra além de "no estoque" e
-  "fora do estoque".
+- Se existe algum estado na tela de quebra além de "no estoque" e "fora do
+  estoque".
