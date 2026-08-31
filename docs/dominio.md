@@ -148,11 +148,23 @@ Situação é **calculada, nunca digitada**. Guardar o resultado deixaria a tela
 mentindo no dia seguinte, quando o produto já teria mudado de faixa sem
 ninguém mexer nele.
 
+## Um saldo só, para as duas telas
+
+Não existe "estoque de quebra" separado do estoque da loja. Saldo e saídas são
+**do produto**, e as duas telas leem os mesmos números.
+
+Consequência: quando a importação traz o saldo daquele produto zerado, o item
+apontado como vencido ou danificado também deixa de estar no estoque — mesmo
+estando em outra tela. Não é preciso dar baixa nos dois lugares, e não há como
+as telas discordarem entre si.
+
+A tela de validades muda a **situação** do produto; ela não mexe no saldo.
+
 ## A tela de quebra
 
 Para onde os itens são baixados depois de apontados. Ali o usuário administra
-**o que ainda está no estoque** e **o que já não está** — este último saindo do
-saldo importado, que zera quando o item some.
+o que ainda está no estoque e o que já não está — e essa separação sai do saldo
+do produto, não de um controle paralelo.
 
 A lista aceita itens repetidos do mesmo produto, por causa dos motivos e das
 validades diferentes.
