@@ -1,0 +1,34 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Validades — desktop" },
+    { "file": "Quebra.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 900, "title": "Quebra — desktop" },
+    { "file": "ValidadesMobile.dc.html", "x": 0, "y": 1080, "w": 390, "h": 844, "title": "Validades — celular" },
+    { "file": "RegistroQuebra.dc.html", "x": 510, "y": 1080, "w": 390, "h": 980, "title": "Registrar quebra" },
+    { "file": "ProdutoPendente.dc.html", "x": 1020, "y": 1080, "w": 390, "h": 844, "title": "Produto fora da base" },
+    { "file": "AvisoRepetido.dc.html", "x": 1530, "y": 1080, "w": 390, "h": 844, "title": "Registro repetido" }
+  ],
+  "annotations": [
+    {
+      "id": "nota-situacoes",
+      "x": 0,
+      "y": -150,
+      "w": 620,
+      "text": "As quatro situações são calculadas, nunca digitadas:\ndias para zerar = estoque × período ÷ saídas, comparado com os dias até vencer.\nSem saídas no período não há divisão — o produto fica sem estimativa em vez de receber um número inventado."
+    },
+    {
+      "id": "nota-faixa",
+      "x": 1560,
+      "y": -150,
+      "w": 620,
+      "text": "A faixa colorida à esquerda de cada linha é a assinatura do logo.\nAqui o mesmo produto aparece duas vezes — vencido e danificado — porque são perdas diferentes.\nExcluir tem desfazer em vez de \"tem certeza?\": confirmação em toda exclusão vira clique automático em uma semana."
+    },
+    {
+      "id": "nota-corredor",
+      "x": 510,
+      "y": 2110,
+      "w": 900,
+      "text": "O caminho do operador no corredor: lê o código pela câmera, confirma o produto, informa quantidade e motivo, salva.\nProduto fora da base não bloqueia — entra como pendente e o administrador completa depois.\nFoto e documento são sugeridos, nunca obrigatórios: registro incompleto é melhor que registro que não acontece."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+    a { color: #3b82f6; } a:hover { color: #2f74e0; }
+    .tnum { font-variant-numeric: tabular-nums; }
+    .mono { font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace; }
+  </style>
+</helmet>
+
+<div style="position: relative; display: flex; flex-direction: column; width: 390px; height: 844px; background: #0d1014; color: #e6e9ef; overflow: hidden">
+
+  <!-- Formulário ao fundo, esmaecido pela folha -->
+  <header style="display: flex; align-items: center; gap: 12px; height: 60px; flex-shrink: 0; padding: 0 16px; background: #12161d; border-bottom: 1px solid rgb(255 255 255 / 0.09)">
+    <span style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-left: -10px; color: #949aa8">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m11 18-6-6 6-6"></path></svg>
+    </span>
+    <strong style="font-size: 16px">Registrar quebra</strong>
+  </header>
+
+  <div style="display: flex; flex-direction: column; gap: 20px; padding: 16px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 14px; font-weight: 500">Produto</span>
+      <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: #161a21; border: 1px solid rgb(255 255 255 / 0.09); border-radius: 10px">
+        <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1">
+          <span style="font-size: 16px; font-weight: 600; line-height: 1.3">TINTA ACRÍLICA FOSCA 18L BRANCO</span>
+          <span class="mono tnum" style="font-size: 13px; color: #949aa8">SKU 10004 · 7892939120521</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Véu -->
+  <div style="position: absolute; inset: 0; background: rgb(3 5 8 / 0.72)"></div>
+
+  <!-- Folha ancorada embaixo: o polegar alcança as ações -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; background: #12161d; border-top: 1px solid rgb(255 255 255 / 0.09); border-radius: 16px 16px 0 0; box-shadow: 0 16px 48px rgb(0 0 0 / 0.45)">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 20px 16px; border-bottom: 1px solid rgb(255 255 255 / 0.09)">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.015em">Já existe um registro igual</h2>
+        <p style="margin: 0; font-size: 14px; color: #949aa8; line-height: 1.45">Mesmo produto, mesma validade e mesmo motivo.</p>
+      </div>
+      <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: 6px; color: #949aa8">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m6 6 12 12"></path><path d="m18 6-12 12"></path></svg>
+      </span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px; padding: 20px">
+
+      <!-- O registro que já existe, para ele decidir olhando -->
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #0a0d11; border: 1px solid rgb(255 255 255 / 0.09); border-radius: 10px">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; background: rgb(229 72 77 / 0.14); border: 1px solid #e5484d; border-radius: 999px; color: #ff9ea1; font-size: 12px; font-weight: 600">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12.2 2.4 2.4 4.6-4.9"></path></svg>
+            Vencido
+          </span>
+          <span class="tnum" style="font-size: 13px; color: #6b7280">registrado em 12/08</span>
+        </div>
+
+        <div style="display: flex; align-items: baseline; gap: 8px">
+          <span class="tnum" style="font-size: 24px; font-weight: 700; letter-spacing: -0.02em">3</span>
+          <span style="font-size: 14px; color: #949aa8">unidades · validade 01/04/2026</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #949aa8">
+          <svg style="flex-shrink: 0; color: #6b7280" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5H7a1.5 1.5 0 0 0-1.5 1.5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8.5l-5-5Z"></path><path d="M13.5 3.5v5h5"></path></svg>
+          divergencia-cd-1208.pdf · por Carlos Menezes
+        </div>
+      </div>
+
+      <p style="margin: 0; font-size: 14px; color: #949aa8; line-height: 1.5">
+        Se esta é <strong style="color: #e6e9ef; font-weight: 600">outra ocorrência</strong> — o material chegou vencido de novo, com outro e-mail — crie um registro separado. Se é a mesma, some a quantidade ao que já existe.
+      </p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; padding: 0 20px 24px">
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 20px; background: #3b82f6; border-radius: 10px; color: #ffffff; font-size: 14px; font-weight: 600">Criar registro separado</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 20px; background: #161a21; border: 1px solid rgb(255 255 255 / 0.16); border-radius: 10px; font-size: 14px; font-weight: 600">Somar ao registro existente</span>
+      <span style="display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 20px; background: transparent; border-radius: 10px; color: #949aa8; font-size: 14px; font-weight: 600">Abrir o registro de 12/08</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
