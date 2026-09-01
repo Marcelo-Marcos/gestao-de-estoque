@@ -49,6 +49,20 @@ O que fica pendente depende do que ele tinha em mãos:
 
 Resolver a pendência é trabalho do administrador, no cadastro de produtos.
 
+## Etiqueta escolhida × etiqueta calculada
+
+Duas coisas diferentes aparecem como "tag" na tela, e vale não confundi-las:
+
+| Tipo | Exemplos | Quem define |
+|---|---|---|
+| **Escolhida** (motivo, origem) | vencido, danificado, veio do CD | o usuário, no registro |
+| **Calculada** (situação) | próximo do vencimento, chance de vender antes | a conta de dias, sozinha |
+
+"Vencido" aparece nos dois papéis, e tudo bem: como *motivo* é a razão de eu
+estar apontando a perda; como *situação* é o que a data diz hoje. A diferença
+que importa é que a situação **muda sozinha com o passar dos dias** e não pode
+ser editada — editá-la seria mentir para o próprio sistema.
+
 ## Como um registro é classificado
 
 Dois eixos separados, não uma lista única de etiquetas:
@@ -167,20 +181,20 @@ A tela de validades muda a **situação** do produto; ela não mexe no saldo.
 
 ### Quando o saldo zera
 
-A quantidade do registro de quebra **zera junto**. A tela passa a refletir
-exatamente o que existe no estoque, sem número sobrando de item que já saiu.
+A quantidade do registro **zera junto**, e o usuário **exclui o registro**. A
+tela mostra o que existe agora; item que saiu não fica ocupando espaço.
 
-Mas o registro guarda **dois números**, não um:
+O sistema **não guarda histórico de perdas**. Foi decisão consciente: o controle
+do que aconteceu vem das etiquetas do registro enquanto ele existe, e o que
+interessa é o presente do estoque, não o acumulado do mês.
 
-| Campo | O que é |
-|---|---|
-| `quantidade` | quanto ainda está no estoque. Zera junto com o saldo |
-| `quantidadeApontada` | quanto foi apontado no momento do registro. Nunca muda |
+Consequência prática, para não ser descoberta depois: relatório do tipo "quanto
+perdemos por avaria em março" não é possível sem mudar esse desenho. Se um dia
+for preciso, basta parar de excluir e passar a arquivar.
 
-O segundo existe porque a pergunta "quanto perdemos por avaria em março?" tem
-que continuar respondível depois que o estoque zerou. Sem ele, o relatório do
-mês fecharia em zero justamente quando todos os itens já tivessem saído — que é
-o caso normal no fim do período.
+A exclusão é destrutiva e imediata, então a interface oferece **desfazer** logo
+depois — melhor que perguntar "tem certeza?" antes de toda exclusão, que vira
+clique automático em uma semana.
 
 ## A tela de quebra
 
