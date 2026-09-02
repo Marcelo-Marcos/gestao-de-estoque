@@ -82,6 +82,21 @@
   --dur-base: 200ms;
   --dur-slow: 320ms;
 
+  /* Aliases da semântica de validade, para um componente escolher a faixa
+     por nome sem precisar de um if para cada cor. */
+  --situation-expired: var(--expired);
+  --situation-expired-soft: var(--expired-soft);
+  --situation-expired-text: var(--expired-text);
+  --situation-warning: var(--warning);
+  --situation-warning-soft: var(--warning-soft);
+  --situation-warning-text: var(--warning-text);
+  --situation-ok: var(--ok);
+  --situation-ok-soft: var(--ok-soft);
+  --situation-ok-text: var(--ok-text);
+  --situation-unknown: var(--unknown);
+  --situation-unknown-soft: var(--unknown-soft);
+  --situation-unknown-text: var(--unknown-text);
+
   --touch-target: 44px;
   --header-height: 60px;
   --sidebar-width: 264px;

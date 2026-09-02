@@ -1,0 +1,150 @@
+import { Alert } from '@/shared/ui/Alert'
+import { Button } from '@/shared/ui/Button'
+import { ProductsSkeleton } from '@/features/products'
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
+import { SearchIcon, UploadIcon } from '@/shared/ui/icons'
+import { SITUATIONS } from '../situation'
+import { ExpiryTable } from '../components/ExpiryTable'
+import { SituationTiles } from '../components/SituationTiles'
+import { useExpiryList } from '../hooks/useExpiryList'
+import styles from './ExpiryPage.module.css'
+
+/**
+ * Acompanhamento de validades.
+ *
+ * A tela existe para responder uma pergunta por vez: o que precisa de decisão
+ * hoje. Por isso abre ordenada da pior situação para a melhor, e os quatro
+ * cartões do topo são o filtro — clicar num deles restringe a lista.
+ */
+export function ExpiryPage() {
+  const list = useExpiryList()
+  const isNarrow = useMediaQuery('(max-width: 719px)')
+  const rowHeight = isNarrow ? 128 : 62
+
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.titles}>
+          <h1 className={styles.title}>Validades</h1>
+          <span className={styles.count}>
+            {list.status === 'ready'
+              ? `${list.overall.toLocaleString('pt-BR')} lotes acompanhados`
+              : 'carregando…'}
+          </span>
+        </div>
+
+        <div className={styles.actions}>
+          <Button variant="secondary">
+            <UploadIcon width={18} height={18} />
+            <span>
+              Importar<span className={styles.labelExtra}> saldo</span>
+            </span>
+          </Button>
+          <Button variant="secondary">
+            <UploadIcon width={18} height={18} />
+            <span>
+              Importar<span className={styles.labelExtra}> saídas</span>
+            </span>
+          </Button>
+        </div>
+      </header>
+
+      <SituationTiles
+        counts={list.counts}
+        selected={list.filters.situations}
+        onToggle={list.toggleSituation}
+      />
+
+      <div className={styles.toolbar}>
+        <div className={styles.search}>
+          <SearchIcon className={styles.searchIcon} width={18} height={18} />
+          <input
+            className={styles.input}
+            type="search"
+            value={list.filters.search}
+            onChange={(event) => list.setSearch(event.target.value)}
+            placeholder={
+              isNarrow ? 'Buscar produto' : 'Buscar por descrição, SKU ou código de barras'
+            }
+            aria-label="Buscar lotes"
+            autoComplete="off"
+          />
+        </div>
+
+        {/* O número que sustenta a previsão fica visível: sem ele, "sai em 195
+            dias" é um número sem procedência. */}
+        <span className={styles.period}>
+          Período das saídas:
+          <span className={styles.periodValue}>{list.periodDays} dias</span>
+        </span>
+      </div>
+
+      {list.isFiltered && (
+        <div className={styles.active} role="status">
+          <SearchIcon className={styles.activeIcon} width={16} height={16} />
+          <span className={styles.activeText}>
+            Mostrando {list.matching.toLocaleString('pt-BR')}{' '}
+            {list.matching === 1 ? 'lote' : 'lotes'}
+            {list.filters.situations.length > 0 && (
+              <>
+                {' '}
+                em{' '}
+                {list.filters.situations
+                  .map((s) => SITUATIONS[s].label.toLowerCase())
+                  .join(', ')}
+              </>
+            )}
+            {list.filters.search.trim() && (
+              <>
+                {' '}
+                para <span className={styles.term}>“{list.filters.search.trim()}”</span>
+              </>
+            )}
+            .
+          </span>
+          <Button variant="secondary" onClick={list.clearFilters}>
+            Limpar filtros
+          </Button>
+        </div>
+      )}
+
+      {list.status === 'loading' && <ProductsSkeleton rowHeight={rowHeight} />}
+
+      {list.status === 'error' && (
+        <div className={styles.state}>
+          <Alert tone="danger">
+            Não foi possível carregar as validades. Verifique a conexão e tente novamente.
+          </Alert>
+          <Button variant="secondary" onClick={list.reload}>
+            Tentar de novo
+          </Button>
+        </div>
+      )}
+
+      {list.status === 'ready' && list.rows.length === 0 && (
+        <div className={styles.state}>
+          <span className={styles.stateIcon}>
+            <SearchIcon width={26} height={26} />
+          </span>
+          <p className={styles.stateTitle}>
+            {list.isFiltered ? 'Nenhum lote encontrado' : 'Nenhum lote em acompanhamento'}
+          </p>
+          <p className={styles.stateText}>
+            {list.isFiltered
+              ? 'Nenhum lote corresponde à busca. Tente outro termo ou limpe os filtros.'
+              : 'Assim que houver produtos com validade cadastrada, eles aparecem aqui.'}
+          </p>
+          {list.isFiltered && (
+            <Button variant="secondary" onClick={list.clearFilters}>
+              Limpar filtros
+            </Button>
+          )}
+        </div>
+      )}
+
+      {list.status === 'ready' && list.rows.length > 0 && (
+        <ExpiryTable rows={list.rows} estimatedRowHeight={rowHeight} />
+      )}
+    </div>
+  )
+}

@@ -6,6 +6,14 @@ export interface Product {
   description: string
   /** cod_barras (EAN/GTIN). Opcional: nem todo produto tem. */
   barcode: string
+  /**
+   * Saldo atual na loja. Vem da importação do relatório de estoque ou é
+   * digitado. É o mesmo número que a tela de quebra usa para saber se o item
+   * ainda está no estoque — não existe saldo paralelo (ver docs/dominio.md).
+   */
+  stock: number
+  /** Quantidade vendida dentro do período configurado. Do segundo relatório. */
+  outflow: number
   createdAt: string
   updatedAt: string
 }

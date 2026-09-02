@@ -5,6 +5,7 @@ import { Button } from '@/shared/ui/Button'
 import {
   BarcodeIcon,
   BoxIcon,
+  CalendarIcon,
   MenuIcon,
   MoonIcon,
   SettingsIcon,
@@ -14,10 +15,31 @@ import { useAuth } from '@/features/auth'
 import { useAppearance } from '@/features/settings'
 import styles from './AppShell.module.css'
 
+/**
+ * Itens do menu.
+ *
+ * `adminOnly` esconde a entrada do operador. O cadastro de produtos é a bancada
+ * do administrador: o operador alcança os produtos pela busca dentro do
+ * registro de quebra, não por um item de menu — para ele aquela tela seria um
+ * beco sem saída (ver docs/dominio.md).
+ */
 const NAV = [
-  { to: '/produtos', label: 'Cadastro de produtos', icon: BoxIcon, ready: true },
-  { to: '/validades', label: 'Validades', icon: BarcodeIcon, ready: false },
-  { to: '/configuracoes', label: 'Configurações', icon: SettingsIcon, ready: false },
+  { to: '/validades', label: 'Validades', icon: CalendarIcon, ready: true, adminOnly: false },
+  { to: '/quebra', label: 'Quebra', icon: BarcodeIcon, ready: false, adminOnly: false },
+  {
+    to: '/produtos',
+    label: 'Cadastro de produtos',
+    icon: BoxIcon,
+    ready: true,
+    adminOnly: true,
+  },
+  {
+    to: '/configuracoes',
+    label: 'Configurações',
+    icon: SettingsIcon,
+    ready: false,
+    adminOnly: false,
+  },
 ]
 
 export function AppShell() {
@@ -55,7 +77,7 @@ export function AppShell() {
         </div>
 
         <nav className={styles.nav}>
-          {NAV.map(({ to, label, icon: Icon, ready }) =>
+          {NAV.filter((item) => !item.adminOnly || user?.role === 'admin').map(({ to, label, icon: Icon, ready }) =>
             ready ? (
               <NavLink
                 key={to}

@@ -1,0 +1,77 @@
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--sp-3);
+}
+
+/* Cada cartão liga e desliga a própria faixa: é botão, não enfeite. */
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: left;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+
+.tile:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.active {
+  border-color: var(--situation);
+  background: var(--situation-soft);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--situation-text);
+}
+
+.label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.value {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--situation-text);
+}
+
+.hint {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* No celular quatro cartões numa linha ficariam ilegíveis; dois cabem. */
+@media (max-width: 719px) {
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-2);
+  }
+
+  .tile {
+    padding: var(--sp-3);
+    gap: var(--sp-1);
+  }
+
+  .value {
+    font-size: var(--fs-lg);
+  }
+
+  .hint {
+    display: none;
+  }
+}

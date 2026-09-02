@@ -77,11 +77,19 @@ export function generateProducts(count: number): Product[] {
       ? ean13(String(789000000000 + Math.floor(random() * 999999999)).slice(0, 12))
       : ''
 
+    // Saldo pequeno e saídas esparsas, como numa loja real: a maior parte
+    // gira devagar, e uma parte não teve saída nenhuma no período — é isso
+    // que produz a faixa "sem estimativa".
+    const stock = Math.floor(random() * 12)
+    const outflow = random() > 0.28 ? Math.floor(random() * 60) : 0
+
     products.push({
       id: `p${sku}`,
       sku,
       description: `${item.nome} ${unidade} ${variacao}`,
       barcode,
+      stock,
+      outflow,
       createdAt: timestamp,
       updatedAt: timestamp,
     })

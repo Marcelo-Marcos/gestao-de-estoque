@@ -79,7 +79,16 @@ export async function createProduct(draft: ProductDraft): Promise<SaveResult> {
   if (error) return { data: null, error }
 
   const now = new Date().toISOString()
-  const product: Product = { id: `p${draft.sku}-${now}`, ...draft, createdAt: now, updatedAt: now }
+  // Produto criado à mão nasce sem saldo: quem traz esses números é a
+  // importação do relatório, ou o usuário depois.
+  const product: Product = {
+    id: `p${draft.sku}-${now}`,
+    ...draft,
+    stock: 0,
+    outflow: 0,
+    createdAt: now,
+    updatedAt: now,
+  }
   store = [product, ...store]
   return { data: product, error: null }
 }
@@ -123,6 +132,8 @@ export async function bulkCreate(
       created.push({
         id: `p${draft.sku}-${now}-${created.length}`,
         ...draft,
+        stock: 0,
+        outflow: 0,
         createdAt: now,
         updatedAt: now,
       })

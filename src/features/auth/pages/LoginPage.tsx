@@ -37,7 +37,7 @@ export function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
 
   if (user) {
-    const from = (location.state as { from?: string } | null)?.from ?? '/produtos'
+    const from = (location.state as { from?: string } | null)?.from ?? '/validades'
     return <Navigate to={from} replace />
   }
 
@@ -69,7 +69,7 @@ export function LoginPage() {
       return
     }
 
-    const from = (location.state as { from?: string } | null)?.from ?? '/produtos'
+    const from = (location.state as { from?: string } | null)?.from ?? '/validades'
     navigate(from, { replace: true })
   }
 
