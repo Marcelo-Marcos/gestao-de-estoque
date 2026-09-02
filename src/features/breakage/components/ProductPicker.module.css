@@ -1,0 +1,187 @@
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.searchRow {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  min-height: var(--touch-target);
+  padding: 0 var(--sp-4) 0 var(--sp-10);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: var(--fs-md);
+}
+
+.input::placeholder {
+  color: var(--text-subtle);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+/* Leitura por câmera: o caminho principal de quem está no corredor. */
+.scan {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  flex-shrink: 0;
+  background: var(--brand);
+  border: none;
+  border-radius: var(--radius);
+  color: var(--brand-contrast);
+}
+
+.scan:hover {
+  background: var(--brand-hover);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: var(--touch-target);
+  padding: var(--sp-2) var(--sp-3);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.result:last-child {
+  border-bottom: none;
+}
+
+.result:hover {
+  background: var(--surface-hover);
+}
+
+.resultName {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.resultCodes {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-subtle);
+}
+
+/* ---- Produto escolhido -------------------------------------------------- */
+.chosen {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--ok);
+  background: var(--ok-soft);
+}
+
+.pending {
+  border-color: var(--warning);
+  background: var(--warning-soft);
+}
+
+.chosenIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.okIcon {
+  color: var(--ok);
+}
+
+.pendingIcon {
+  color: var(--warning);
+}
+
+.chosenBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.chosenName {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.chosenCodes {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.pendingTitle {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--warning-text);
+}
+
+.pendingText {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.change {
+  flex-shrink: 0;
+  min-height: var(--touch-target);
+  padding: 0 var(--sp-2);
+  background: transparent;
+  border: none;
+  color: var(--brand);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.empty {
+  padding: var(--sp-3);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-align: center;
+}

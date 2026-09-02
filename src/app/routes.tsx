@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ForgotPasswordPage, LoginPage, ResetPasswordPage } from '@/features/auth'
+import { BreakagePage } from '@/features/breakage'
 import { ExpiryPage } from '@/features/expiry'
 import { ProductsPage } from '@/features/products'
 import { AppShell } from './AppShell'
@@ -31,6 +32,7 @@ export function AppRoutes() {
       <Route element={<RequireAuth />}>
         <Route element={<AppShell />}>
           <Route path="/validades" element={<ExpiryPage />} />
+          <Route path="/quebra" element={<BreakagePage />} />
           <Route path="/produtos" element={<ProductsPage />} />
         </Route>
       </Route>

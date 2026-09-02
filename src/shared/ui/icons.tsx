@@ -182,3 +182,16 @@ export const CalendarIcon = (p: IconProps) => (
     <path d="M16 3v4" />
   </Icon>
 )
+
+export const MinusIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M5 12h14" />
+  </Icon>
+)
+
+export const CameraIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M3.5 8.5h3l1.5-2.5h8l1.5 2.5h3v10a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 18.5v-10Z" />
+    <circle cx="12" cy="13" r="3.2" />
+  </Icon>
+)

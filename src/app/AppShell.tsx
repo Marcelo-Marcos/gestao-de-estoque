@@ -25,7 +25,7 @@ import styles from './AppShell.module.css'
  */
 const NAV = [
   { to: '/validades', label: 'Validades', icon: CalendarIcon, ready: true, adminOnly: false },
-  { to: '/quebra', label: 'Quebra', icon: BarcodeIcon, ready: false, adminOnly: false },
+  { to: '/quebra', label: 'Quebra', icon: BarcodeIcon, ready: true, adminOnly: false },
   {
     to: '/produtos',
     label: 'Cadastro de produtos',

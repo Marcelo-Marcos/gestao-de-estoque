@@ -205,6 +205,11 @@ do produto, não de um controle paralelo.
 A lista aceita itens repetidos do mesmo produto, por causa dos motivos e das
 validades diferentes.
 
+A separação vira três abas — **no estoque**, **zerados** e **todos** — e a tela
+abre em "no estoque". Um registro que zerou já não é trabalho pendente: deixá-lo
+à vista faria a lista crescer com o que não exige decisão de ninguém. Continua a
+um toque de distância, porque é ali que o usuário confere o que pode excluir.
+
 ## O que veio do AppSheet e não se repete aqui
 
 O app anterior tinha tabelas que existiam para contornar limitações da
@@ -244,6 +249,11 @@ Pontos que a especificação de cada tela precisa fechar:
   "retirado", …) e o que faz cada um mudar.
 - Se as listas de motivo e origem são **da loja** ou **de cada operador** (ver
   risco abaixo).
-- Quais valores começam nessas listas.
-- Se existe algum estado na tela de quebra além de "no estoque" e "fora do
-  estoque".
+
+Fechados durante a construção da tela de quebra:
+
+- **Estados do item na tela de quebra**: são dois, e saem do saldo do produto —
+  no estoque e zerado. Não há estado próprio da quebra a manter em paralelo.
+- **Valores iniciais das listas**: motivos (Vencido, Danificado, Avaria de
+  transporte, Divergência de quantidade, Furto ou perda) e origens (Centro de
+  distribuição, Loja, Fornecedor), todos editáveis.

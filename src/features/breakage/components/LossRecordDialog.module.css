@@ -1,0 +1,108 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+/* Item de grid não encolhe abaixo do próprio conteúdo por padrão, e o
+   <input type="date"> traz uma largura intrínseca do navegador. Sem isto a
+   dupla estourava a lateral do diálogo a 360px. */
+.pair > * {
+  min-width: 0;
+}
+
+@media (max-width: 479px) {
+  .pair {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.optional {
+  color: var(--text-subtle);
+  font-weight: 400;
+}
+
+.date {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--touch-target);
+  padding: 0 var(--sp-4);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums;
+}
+
+.date:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+.remaining {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.overdue {
+  color: var(--expired-text);
+}
+
+.note {
+  min-height: 66px;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.note:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+/* Aviso de que o registro vai entrar como pendente: fica junto do botão, no
+   momento da decisão, não no topo onde já teria sido esquecido. */
+.pendingNotice {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.pendingIcon {
+  flex-shrink: 0;
+  color: var(--warning);
+}
+
+.pendingStrong {
+  color: var(--warning-text);
+  font-weight: 600;
+}

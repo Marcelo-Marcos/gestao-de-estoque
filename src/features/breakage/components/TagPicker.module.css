@@ -1,0 +1,88 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.optional {
+  color: var(--text-subtle);
+  font-weight: 400;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: var(--touch-target);
+  padding: 0 var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.option:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.selected {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+/* Criar etiqueta nova é uma ação secundária: fica visivelmente diferente das
+   opções, para não parecer mais uma delas. */
+.add {
+  border-style: dashed;
+  border-color: var(--border-strong);
+  color: var(--text-subtle);
+}
+
+.newRow {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.newInput {
+  flex: 1;
+  min-height: var(--touch-target);
+  padding: 0 var(--sp-4);
+  background: var(--bg-elevated);
+  border: 1px solid var(--brand);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+
+.newInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--expired-text);
+}
