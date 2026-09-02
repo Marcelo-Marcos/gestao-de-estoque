@@ -5,7 +5,7 @@ import type { LossRecord } from '../types'
 import styles from './UndoBar.module.css'
 
 interface UndoBarProps {
-  record: LossRecord | null
+  records: LossRecord[]
   onUndo: () => void
   onDismiss: () => void
 }
@@ -17,14 +17,22 @@ interface UndoBarProps {
  * da tela junto com o registro excluído, e o desfazer só serve enquanto está à
  * vista.
  */
-export function UndoBar({ record, onUndo, onDismiss }: UndoBarProps) {
-  if (!record) return null
+export function UndoBar({ records, onUndo, onDismiss }: UndoBarProps) {
+  if (records.length === 0) return null
 
   return (
     <div className={styles.bar} role="status">
       <TrashIcon className={styles.icon} width={18} height={18} />
       <span className={styles.text}>
-        Registro de <strong>{recordLabel(record)}</strong> excluído.
+        {records.length === 1 ? (
+          <>
+            Registro de <strong>{recordLabel(records[0])}</strong> excluído.
+          </>
+        ) : (
+          <>
+            <strong>{records.length} registros</strong> excluídos.
+          </>
+        )}
       </span>
       <Button variant="secondary" onClick={onUndo}>
         Desfazer

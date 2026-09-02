@@ -50,6 +50,12 @@ export async function countProducts(): Promise<number> {
   return store.length
 }
 
+/** Um produto pelo id, para quem já guardou a referência e precisa do saldo atual. */
+export async function getProduct(id: string): Promise<Product | null> {
+  await delay(30)
+  return store.find((p) => p.id === id) ?? null
+}
+
 export async function getAllProducts(): Promise<Product[]> {
   await delay(30)
   return store

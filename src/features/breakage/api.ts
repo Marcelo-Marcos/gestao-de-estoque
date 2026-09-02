@@ -76,7 +76,11 @@ export async function countLossRecords(): Promise<{ total: number; inStock: numb
  * A chave importa. Avisando só por produto, o aviso dispararia o tempo todo —
  * e aviso que aparece sempre vira aviso que ninguém lê.
  */
-export async function findSameRecord(draft: LossRecordDraft): Promise<LossRecord | null> {
+export async function findSameRecord(
+  draft: LossRecordDraft,
+  /** Registro em edição: ele não pode se encontrar como duplicata de si mesmo. */
+  ignoreId?: string,
+): Promise<LossRecord | null> {
   await delay(80)
 
   const records = await withCurrentStock(store)
@@ -85,6 +89,7 @@ export async function findSameRecord(draft: LossRecordDraft): Promise<LossRecord
   return (
     records.find(
       (record) =>
+        record.id !== ignoreId &&
         (record.productId || record.barcode) === identity &&
         record.expiryDate === draft.expiryDate &&
         record.reasonId === draft.reasonId,
@@ -120,16 +125,26 @@ export async function updateLossRecord(id: string, draft: LossRecordDraft): Prom
   store = store.map((r) => (r.id === id ? { ...r, ...draft } : r))
 }
 
-export async function deleteLossRecord(id: string): Promise<LossRecord | null> {
+/**
+ * Exclui um ou vários registros de uma vez, devolvendo o que saiu.
+ *
+ * Sempre em lote, mesmo para um só: a tela oferece seleção múltipla, e ter dois
+ * caminhos de exclusão significaria dois lugares para o desfazer errar.
+ */
+export async function deleteLossRecords(ids: string[]): Promise<LossRecord[]> {
   await delay(LATENCY_MS)
 
-  const removed = store.find((r) => r.id === id) ?? null
-  store = store.filter((r) => r.id !== id)
+  const alvos = new Set(ids)
+  const removed = store.filter((r) => alvos.has(r.id))
+  store = store.filter((r) => !alvos.has(r.id))
   return removed
 }
 
-/** Devolve um registro excluído ao seu lugar — o "desfazer" da tela. */
-export async function restoreLossRecord(record: LossRecord): Promise<void> {
+/** Devolve registros excluídos ao seu lugar — o "desfazer" da tela. */
+export async function restoreLossRecords(records: LossRecord[]): Promise<void> {
   await delay(80)
-  if (!store.some((r) => r.id === record.id)) store = [record, ...store]
+
+  const existentes = new Set(store.map((r) => r.id))
+  const voltando = records.filter((r) => !existentes.has(r.id))
+  if (voltando.length) store = [...voltando, ...store]
 }

@@ -13,6 +13,8 @@ interface DuplicateWarningProps {
   reasons: Tag[]
   /** Quantidade que o usuário acabou de informar. */
   quantity: number
+  /** True quando o formulário altera um registro que já existe. */
+  editing: boolean
   busy: boolean
   onClose: () => void
   onCreateSeparate: () => void
@@ -29,12 +31,16 @@ interface DuplicateWarningProps {
  * A chave é produto + validade + motivo justamente para o aviso ser raro. Se
  * disparasse só por produto, apareceria o tempo todo, e aviso que aparece
  * sempre vira aviso que ninguém lê.
+ *
+ * Na edição some a opção de somar: ela deixaria a quantidade em dois lugares —
+ * no registro alterado e no que a recebeu — e o total dobraria.
  */
 export function DuplicateWarning({
   open,
   existing,
   reasons,
   quantity,
+  editing,
   busy,
   onClose,
   onCreateSeparate,
@@ -50,11 +56,17 @@ export function DuplicateWarning({
       subtitle="Mesmo produto, mesma validade e mesmo motivo."
       footer={
         <>
-          <Button variant="secondary" onClick={onAddToExisting} loading={busy}>
-            Somar ao existente
-          </Button>
+          {editing ? (
+            <Button variant="secondary" onClick={onClose}>
+              Voltar e revisar
+            </Button>
+          ) : (
+            <Button variant="secondary" onClick={onAddToExisting} loading={busy}>
+              Somar ao existente
+            </Button>
+          )}
           <Button onClick={onCreateSeparate} loading={busy}>
-            Criar registro separado
+            {editing ? 'Salvar assim mesmo' : 'Criar registro separado'}
           </Button>
         </>
       }
@@ -85,12 +97,20 @@ export function DuplicateWarning({
           )}
         </div>
 
-        <p className={styles.explain}>
-          Se esta é <span className={styles.strong}>outra ocorrência</span> — o material chegou
-          de novo, com outro documento — crie um registro separado. Se é a mesma, some as{' '}
-          <span className={styles.strong}>{quantity}</span>{' '}
-          {quantity === 1 ? 'unidade' : 'unidades'} ao que já existe.
-        </p>
+        {editing ? (
+          <p className={styles.explain}>
+            Depois desta alteração os dois registros ficam com o mesmo produto, a mesma
+            validade e o mesmo motivo. Pode salvar assim se forem{' '}
+            <span className={styles.strong}>ocorrências diferentes</span>.
+          </p>
+        ) : (
+          <p className={styles.explain}>
+            Se esta é <span className={styles.strong}>outra ocorrência</span> — o material chegou
+            de novo, com outro documento — crie um registro separado. Se é a mesma, some as{' '}
+            <span className={styles.strong}>{quantity}</span>{' '}
+            {quantity === 1 ? 'unidade' : 'unidades'} ao que já existe.
+          </p>
+        )}
       </div>
     </Dialog>
   )

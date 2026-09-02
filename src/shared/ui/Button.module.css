@@ -55,6 +55,18 @@
   background: var(--surface-hover);
 }
 
+/* Ação destrutiva: o vermelho aqui é sinal de consequência, não decoração —
+   por isso vem do mesmo token de "vencido", que já significa perda. */
+.danger {
+  background: var(--expired-soft);
+  border-color: var(--expired);
+  color: var(--expired-text);
+}
+.danger:hover:not(:disabled) {
+  background: var(--expired);
+  color: var(--text-inverse);
+}
+
 .ghost {
   background: transparent;
   color: var(--text-muted);

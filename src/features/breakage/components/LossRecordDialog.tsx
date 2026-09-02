@@ -6,6 +6,7 @@ import { AlertIcon } from '@/shared/ui/icons'
 import { daysUntil, parseDate } from '@/shared/lib/date'
 import { useAuth } from '@/features/auth'
 import { useLossRecordForm } from '../hooks/useLossRecordForm'
+import type { LossRecord } from '../types'
 import { AttachmentSlots } from './AttachmentSlots'
 import { DuplicateWarning } from './DuplicateWarning'
 import { ProductPicker } from './ProductPicker'
@@ -15,6 +16,8 @@ import styles from './LossRecordDialog.module.css'
 
 interface LossRecordDialogProps {
   open: boolean
+  /** Registro a alterar. Ausente, o formulário cria um novo. */
+  record?: LossRecord
   onClose: () => void
   onSaved: () => void
 }
@@ -26,17 +29,26 @@ interface LossRecordDialogProps {
  * campos é a ordem do trabalho no corredor: primeiro o produto na mão, depois
  * quanto e por quê, e só então o que comprova.
  */
-export function LossRecordDialog({ open, onClose, onSaved }: LossRecordDialogProps) {
+export function LossRecordDialog({ open, record, onClose, onSaved }: LossRecordDialogProps) {
+  // Montar só quando aberto zera os campos a cada abertura, e a chave garante
+  // que abrir outro registro para editar não reaproveite o estado do anterior
+  // — o que um efeito sincronizando prop com estado faria pior.
   if (!open) return null
-  return <LossRecordForm onClose={onClose} onSaved={onSaved} />
+  return (
+    <LossRecordForm key={record?.id ?? 'novo'} record={record} onClose={onClose} onSaved={onSaved} />
+  )
 }
 
-function LossRecordForm({ onClose, onSaved }: Omit<LossRecordDialogProps, 'open'>) {
+function LossRecordForm({ record, onClose, onSaved }: Omit<LossRecordDialogProps, 'open'>) {
   const { user } = useAuth()
-  const form = useLossRecordForm(user?.name ?? 'Sistema', () => {
-    onSaved()
-    onClose()
-  })
+  const form = useLossRecordForm(
+    user?.name ?? 'Sistema',
+    () => {
+      onSaved()
+      onClose()
+    },
+    record,
+  )
 
   const restantes = daysUntil(form.expiryDate)
 
@@ -50,8 +62,12 @@ function LossRecordForm({ onClose, onSaved }: Omit<LossRecordDialogProps, 'open'
       <Dialog
         open
         onClose={onClose}
-        title="Registrar quebra"
-        subtitle="Aponte o que saiu do estoque sem ser vendido."
+        title={form.editing ? 'Editar registro' : 'Registrar quebra'}
+        subtitle={
+          form.editing
+            ? 'Corrija o que foi apontado. O histórico é o próprio registro.'
+            : 'Aponte o que saiu do estoque sem ser vendido.'
+        }
         footer={
           <>
             {form.product?.pendingProduct && (
@@ -64,7 +80,7 @@ function LossRecordForm({ onClose, onSaved }: Omit<LossRecordDialogProps, 'open'
               Cancelar
             </Button>
             <Button type="submit" form="loss-record-form" loading={form.saving}>
-              Salvar registro
+              {form.editing ? 'Salvar alterações' : 'Salvar registro'}
             </Button>
           </>
         }
@@ -154,6 +170,7 @@ function LossRecordForm({ onClose, onSaved }: Omit<LossRecordDialogProps, 'open'
         existing={form.duplicate}
         reasons={form.reasons}
         quantity={form.quantity}
+        editing={form.editing}
         busy={form.saving}
         onClose={form.dismissDuplicate}
         onCreateSeparate={() => void form.createSeparate()}

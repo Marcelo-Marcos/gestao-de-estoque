@@ -22,6 +22,7 @@
 
 .identity {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: var(--sp-1);
   min-width: 0;
@@ -118,7 +119,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.delete {
+.action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -138,16 +139,22 @@
     background var(--dur-fast) var(--ease-out);
 }
 
+.action:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.action:focus-visible {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
 .delete:hover {
   background: var(--expired-soft);
   border-color: var(--expired);
   color: var(--expired-text);
-}
-
-.delete:focus-visible {
-  outline: none;
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px var(--brand-ring);
 }
 
 .srOnly {
@@ -159,10 +166,35 @@
   white-space: nowrap;
 }
 
+/* Cartão marcado se distingue pela borda, não só pelo fundo: sob sol forte a
+   diferença de fundo some. */
+.selected {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.select {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  margin: calc(var(--sp-2) * -1) 0 0 calc(var(--sp-2) * -1);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--brand);
+  cursor: pointer;
+}
+
 /* No celular o rótulo sai e sobra o ícone; o nome acessível fica no
    aria-label, então quem usa leitor de tela não perde nada. */
 @media (max-width: 599px) {
-  .deleteLabel {
+  .actionLabel {
     position: absolute;
     width: 1px;
     height: 1px;

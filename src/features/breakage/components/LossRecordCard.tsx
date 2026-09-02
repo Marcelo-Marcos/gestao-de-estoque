@@ -1,5 +1,5 @@
 import { Badge } from '@/shared/ui/Badge'
-import { CalendarIcon, FileIcon, TrashIcon } from '@/shared/ui/icons'
+import { CalendarIcon, EditIcon, FileIcon, TrashIcon } from '@/shared/ui/icons'
 import { daysUntil, formatDate } from '@/shared/lib/date'
 import { recordLabel } from '../label'
 import { labelOf } from '../tags'
@@ -10,6 +10,9 @@ interface LossRecordCardProps {
   record: LossRecord
   reasons: Tag[]
   origins: Tag[]
+  selected: boolean
+  onToggleSelect: (id: string) => void
+  onEdit: (record: LossRecord) => void
   onDelete: (record: LossRecord) => void
 }
 
@@ -38,15 +41,37 @@ function deadline(record: LossRecord) {
  * celular: o que interessa — o produto, quanto e por quê — precisa caber sem
  * rolagem lateral.
  */
-export function LossRecordCard({ record, reasons, origins, onDelete }: LossRecordCardProps) {
+export function LossRecordCard({
+  record,
+  reasons,
+  origins,
+  selected,
+  onToggleSelect,
+  onEdit,
+  onDelete,
+}: LossRecordCardProps) {
   const prazo = deadline(record)
   const motivo = labelOf(reasons, record.reasonId)
   const origem = labelOf(origins, record.originId)
   const zerado = record.quantity <= 0
 
   return (
-    <article className={`${styles.card} ${zerado ? styles.zeroed : ''}`}>
+    <article
+      className={`${styles.card} ${zerado ? styles.zeroed : ''} ${selected ? styles.selected : ''}`}
+    >
       <div className={styles.head}>
+        {/* A caixa fica no cartão, e não numa barra que aparece só depois de um
+            "modo seleção": marcar o segundo item não pode custar dois toques. */}
+        <label className={styles.select}>
+          <input
+            type="checkbox"
+            className={styles.checkbox}
+            checked={selected}
+            onChange={() => onToggleSelect(record.id)}
+          />
+          <span className={styles.srOnly}>Selecionar {recordLabel(record)}</span>
+        </label>
+
         <div className={styles.identity}>
           <h2 className={styles.description}>{record.description || 'Sem descrição'}</h2>
           <span className={styles.codes}>
@@ -99,16 +124,26 @@ export function LossRecordCard({ record, reasons, origins, onDelete }: LossRecor
           </span>
         )}
 
+        <button
+          type="button"
+          className={styles.action}
+          onClick={() => onEdit(record)}
+          aria-label={`Editar registro de ${recordLabel(record)}`}
+        >
+          <EditIcon width={16} height={16} />
+          <span className={styles.actionLabel}>Editar</span>
+        </button>
+
         {/* Sem confirmação: o desfazer da tela resolve o engano sem cobrar um
             clique extra de toda exclusão de rotina (ver docs/dominio.md). */}
         <button
           type="button"
-          className={styles.delete}
+          className={`${styles.action} ${styles.delete}`}
           onClick={() => onDelete(record)}
           aria-label={`Excluir registro de ${recordLabel(record)}`}
         >
           <TrashIcon width={16} height={16} />
-          <span className={styles.deleteLabel}>Excluir</span>
+          <span className={styles.actionLabel}>Excluir</span>
         </button>
       </div>
     </article>

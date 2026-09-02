@@ -205,10 +205,31 @@ do produto, não de um controle paralelo.
 A lista aceita itens repetidos do mesmo produto, por causa dos motivos e das
 validades diferentes.
 
+Cada registro pode ser **editado** — o apontamento é feito no corredor, com o
+material na mão, e errar a quantidade ou o motivo ali é normal. Como não há
+histórico de perdas por decisão (ver acima), a correção é o próprio registro: o
+que está gravado é o que vale.
+
+A exclusão também acontece **em grupo**: marcando os registros e excluindo de
+uma vez. É o caso da conferência que zera vários itens no mesmo dia, em que
+excluir um a um seria trabalho repetido sem decisão nova a cada clique. O
+desfazer vale para o grupo inteiro, e trocar de filtro limpa a seleção — marcar
+numa aba e excluir em outra apagaria o que a pessoa não está vendo.
+
 A separação vira três abas — **no estoque**, **zerados** e **todos** — e a tela
 abre em "no estoque". Um registro que zerou já não é trabalho pendente: deixá-lo
 à vista faria a lista crescer com o que não exige decisão de ninguém. Continua a
 um toque de distância, porque é ali que o usuário confere o que pode excluir.
+
+### Exportar para planilha
+
+A quebra sai em `.xlsx` **com os filtros aplicados**, na ordem da tela. Quem
+filtrou por um motivo quer levar aquele recorte para a reunião, não a base
+inteira; exportar tudo obrigaria a filtrar de novo no Excel, refazendo à mão o
+que a tela já sabe.
+
+O código de barras vai como texto: em número, o Excel come o zero à esquerda e
+mostra `7,89658E+12` numa coluna estreita.
 
 ## O que veio do AppSheet e não se repete aqui
 
