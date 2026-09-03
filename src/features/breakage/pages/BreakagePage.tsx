@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
 import { PlusIcon, SearchIcon, UploadIcon } from '@/shared/ui/icons'
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { BreakageToolbar } from '../components/BreakageToolbar'
 import { LossRecordCard } from '../components/LossRecordCard'
 import { LossRecordDialog } from '../components/LossRecordDialog'
@@ -26,6 +27,9 @@ type DialogState = { open: false } | { open: true; record?: LossRecord }
 export function BreakagePage() {
   const list = useLossRecordList()
   const [dialog, setDialog] = useState<DialogState>({ open: false })
+
+  // Um só listener para a lista inteira, em vez de um por cartão.
+  const compact = useMediaQuery('(max-width: 599px)')
 
   // A tela só lê as listas — quem cria etiqueta é o formulário, e ele lê o
   // storage de novo ao abrir.
@@ -53,12 +57,11 @@ export function BreakagePage() {
           <Button
             variant="secondary"
             disabled={list.records.length === 0}
+            aria-label="Exportar para Excel"
             onClick={() => exportLossRecords(list.records, reasons, origins)}
           >
             <UploadIcon className={styles.exportIcon} width={18} height={18} />
-            <span>
-              Exportar<span className={styles.labelExtra}> Excel</span>
-            </span>
+            <span className={styles.labelExtra}>Exportar Excel</span>
           </Button>
 
           <Button onClick={() => setDialog({ open: true })}>
@@ -138,6 +141,7 @@ export function BreakagePage() {
               reasons={reasons}
               origins={origins}
               selected={list.selection.has(record.id)}
+              compact={compact}
               onToggleSelect={list.toggleSelected}
               onEdit={(alvo) => setDialog({ open: true, record: alvo })}
               onDelete={(alvo) => void list.remove([alvo.id])}

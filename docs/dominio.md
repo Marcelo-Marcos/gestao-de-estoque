@@ -205,6 +205,13 @@ do produto, não de um controle paralelo.
 A lista aceita itens repetidos do mesmo produto, por causa dos motivos e das
 validades diferentes.
 
+No celular o cartão inteiro abre a edição, e os botões de editar e excluir não
+aparecem nele. Não é economia de enfeite: um motivo comprido já ocupa a largura
+toda dos chips, e os botões numa linha própria custavam 52px por registro — de
+199px de cartão para 144px, quase um registro a mais por tela. A exclusão
+continua acessível pela seleção, que serve melhor quando é mais de um. Da
+largura de tablet para cima, onde há espaço, os botões voltam.
+
 Cada registro pode ser **editado** — o apontamento é feito no corredor, com o
 material na mão, e errar a quantidade ou o motivo ali é normal. Como não há
 histórico de perdas por decisão (ver acima), a correção é o próprio registro: o

@@ -62,6 +62,39 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Sinal de que o cartão abre ao toque. Discreto: é dica, não ação. */
+.chevron {
+  flex-shrink: 0;
+  align-self: center;
+  color: var(--text-subtle);
+}
+
+.tappable {
+  cursor: pointer;
+}
+
+.open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.open:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.tappable:active {
+  background: var(--surface-hover);
+}
+
 .quantityLabel {
   font-size: var(--fs-xs);
   color: var(--text-muted);
@@ -69,8 +102,11 @@
 
 .tags {
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--sp-2);
+  min-width: 0;
 }
 
 .deadline {
@@ -94,20 +130,33 @@
   overflow-wrap: anywhere;
 }
 
+/* Chips e ações dividem a última linha onde há largura para isso. No celular
+   não há: com um motivo comprido, os chips desciam para uma segunda linha e o
+   cartão ficava mais alto do que era antes de "economizar". Lá embaixo, no
+   media query, as duas voltam a ser linhas separadas. */
 .foot {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  margin-left: auto;
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--sp-3);
-  flex-wrap: wrap;
-  padding-top: var(--sp-2);
-  border-top: 1px solid var(--border);
 }
 
 .author {
-  flex: 1;
-  min-width: 0;
   font-size: var(--fs-xs);
   color: var(--text-subtle);
+  /* Numa linha só: quebrando em duas, "Carlos Menezes · 03/09/2026" custava a
+     altura de mais um registro na lista. Corta o nome, nunca a data. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .attachments {
@@ -192,7 +241,9 @@
 }
 
 /* No celular o rótulo sai e sobra o ícone; o nome acessível fica no
-   aria-label, então quem usa leitor de tela não perde nada. */
+   aria-label, então quem usa leitor de tela não perde nada.
+   O resto aqui é aperto de respiro: cada 8px economizados por cartão é meio
+   registro a mais na tela, e a tela é usada rolando o corredor. */
 @media (max-width: 599px) {
   .actionLabel {
     position: absolute;
@@ -201,5 +252,25 @@
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
+  }
+
+  .card {
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+  }
+
+  .head {
+    gap: var(--sp-2);
+  }
+
+  /* O alvo de toque continua 44px: a área do botão passa a ser só o ícone,
+     sem o respiro lateral do rótulo que não existe mais aqui. */
+  .action {
+    padding: 0;
+    width: var(--touch-target);
+  }
+
+  .bottom {
+    gap: var(--sp-2);
   }
 }
