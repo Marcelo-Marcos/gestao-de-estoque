@@ -5,6 +5,12 @@
   flex-wrap: wrap;
 }
 
+/* No modo foco as ações do cabeçalho vêm para cá. */
+.actions {
+  display: flex;
+  gap: var(--sp-2);
+}
+
 .search {
   position: relative;
   display: flex;

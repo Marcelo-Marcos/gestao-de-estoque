@@ -44,6 +44,12 @@
   box-shadow: 0 0 0 3px var(--brand-ring);
 }
 
+/* No modo foco as ações do cabeçalho vêm para cá. */
+.actions {
+  display: flex;
+  gap: var(--sp-2);
+}
+
 .tabs {
   display: flex;
   gap: var(--sp-1);
@@ -113,7 +119,13 @@
 }
 
 @media (max-width: 599px) {
-  .tabs {
+  /* No modo foco as ações do cabeçalho vêm para cá. */
+.actions {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.tabs {
     width: 100%;
   }
 

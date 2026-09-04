@@ -1,11 +1,15 @@
 import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
+import { ExportButton } from '@/shared/ui/ExportButton'
 import { ProductsSkeleton } from '@/features/products'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
+import { useFocusMode } from '@/shared/hooks/useLayoutPreferences'
+import { FocusToggle } from '@/shared/ui/FocusToggle'
 import { SearchIcon, UploadIcon } from '@/shared/ui/icons'
 import { SITUATIONS } from '../situation'
 import { ExpiryTable } from '../components/ExpiryTable'
 import { SituationTiles } from '../components/SituationTiles'
+import { exportExpiryRows } from '../export'
 import { useExpiryList } from '../hooks/useExpiryList'
 import styles from './ExpiryPage.module.css'
 
@@ -19,41 +23,62 @@ import styles from './ExpiryPage.module.css'
 export function ExpiryPage() {
   const list = useExpiryList()
   const isNarrow = useMediaQuery('(max-width: 719px)')
+  const focus = useFocusMode()
   const rowHeight = isNarrow ? 128 : 62
+
+  /**
+   * As ações acompanham o cabeçalho quando ele existe e migram para a barra de
+   * busca no modo foco.
+   */
+  const acoes = (
+    <>
+      <ExportButton
+        count={list.rows.length}
+        onExport={() => exportExpiryRows(list.rows, list.periodDays)}
+      />
+      <Button variant="secondary">
+        <UploadIcon width={18} height={18} />
+        <span>
+          Importar<span className={styles.labelExtra}> saldo</span>
+        </span>
+      </Button>
+      <Button variant="secondary">
+        <UploadIcon width={18} height={18} />
+        <span>
+          Importar<span className={styles.labelExtra}> saídas</span>
+        </span>
+      </Button>
+    </>
+  )
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.titles}>
-          <h1 className={styles.title}>Validades</h1>
-          <span className={styles.count}>
-            {list.status === 'ready'
-              ? `${list.overall.toLocaleString('pt-BR')} lotes acompanhados`
-              : 'carregando…'}
-          </span>
-        </div>
-
-        <div className={styles.actions}>
-          <Button variant="secondary">
-            <UploadIcon width={18} height={18} />
-            <span>
-              Importar<span className={styles.labelExtra}> saldo</span>
+      {!focus.focused && (
+        <header className={styles.header}>
+          <div className={styles.titles}>
+            <h1 className={styles.title}>Validades</h1>
+            <span className={styles.count}>
+              {list.status === 'ready'
+                ? `${list.overall.toLocaleString('pt-BR')} lotes acompanhados`
+                : 'carregando…'}
             </span>
-          </Button>
-          <Button variant="secondary">
-            <UploadIcon width={18} height={18} />
-            <span>
-              Importar<span className={styles.labelExtra}> saídas</span>
-            </span>
-          </Button>
-        </div>
-      </header>
+          </div>
 
-      <SituationTiles
-        counts={list.counts}
-        selected={list.filters.situations}
-        onToggle={list.toggleSituation}
-      />
+          <div className={styles.actions}>{acoes}</div>
+        </header>
+      )}
+
+      {/* Os cartões saem no modo foco: são 130px de altura, o maior pedaço de
+          tela que dá para devolver à lista. O filtro que eles aplicam continua
+          visível na faixa abaixo, com o botão de limpar — senão a lista
+          filtrada pareceria a lista inteira (ver CLAUDE.md). */}
+      {!focus.focused && (
+        <SituationTiles
+          counts={list.counts}
+          selected={list.filters.situations}
+          onToggle={list.toggleSituation}
+        />
+      )}
 
       <div className={styles.toolbar}>
         <div className={styles.search}>
@@ -77,6 +102,10 @@ export function ExpiryPage() {
           Período das saídas:
           <span className={styles.periodValue}>{list.periodDays} dias</span>
         </span>
+
+        {focus.focused && <div className={styles.actions}>{acoes}</div>}
+
+        <FocusToggle focused={focus.focused} onToggle={focus.toggle} />
       </div>
 
       {list.isFiltered && (

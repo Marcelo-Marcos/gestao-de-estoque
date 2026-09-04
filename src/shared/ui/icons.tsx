@@ -195,3 +195,55 @@ export const CameraIcon = (p: IconProps) => (
     <circle cx="12" cy="13" r="3.2" />
   </Icon>
 )
+
+export const ChevronLeftIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="m14.5 6-6 6 6 6" />
+  </Icon>
+)
+
+/** Setas para fora dos cantos: abrir espaço para a lista. */
+export const ExpandIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M9 3H3v6" />
+    <path d="M15 21h6v-6" />
+    <path d="M3 3l7 7" />
+    <path d="M21 21l-7-7" />
+  </Icon>
+)
+
+/** Setas para dentro: devolver o cabeçalho. */
+export const CollapseIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M3 9h6V3" />
+    <path d="M21 15h-6v6" />
+    <path d="M10 10 3 3" />
+    <path d="m14 14 7 7" />
+  </Icon>
+)
+
+/** Barra lateral: o retângulo com a coluna à esquerda. */
+export const SidebarIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M9 4v16" />
+  </Icon>
+)
+
+/** Papel com dobra e uma imagem dentro: foto anexada. */
+export const ImageIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <circle cx="8.5" cy="9.5" r="1.5" />
+    <path d="m21 16-5-5-6.5 6.5" />
+  </Icon>
+)
+
+/** Seta para baixo sobre uma linha: baixar o arquivo. */
+export const DownloadIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M12 3v11" />
+    <path d="m7.5 10 4.5 4.5 4.5-4.5" />
+    <path d="M4 20h16" />
+  </Icon>
+)

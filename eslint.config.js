@@ -100,4 +100,12 @@ export default tseslint.config(
     files: ['src/app/**/*.{ts,tsx}'],
     rules: { 'no-restricted-imports': 'off' },
   },
+
+  // Arquivo longo por ser uma lista de dados está tudo bem — o problema que a
+  // regra procura é lógica misturada, e aqui não há nenhuma (ver CLAUDE.md,
+  // "Tamanho de arquivo e modularização").
+  {
+    files: ['src/shared/ui/icons.tsx', 'src/styles/**'],
+    rules: { 'max-lines': 'off' },
+  },
 )

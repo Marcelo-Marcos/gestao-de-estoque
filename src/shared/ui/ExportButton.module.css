@@ -1,0 +1,17 @@
+/* A seta do ícone de importar apontando para cima vira "sair": é o mesmo
+   desenho, e girá-lo evita um ícone novo só para o sentido oposto. */
+.icon {
+  transform: rotate(180deg);
+}
+
+/* No celular sobra o ícone; o nome acessível fica no aria-label. */
+@media (max-width: 599px) {
+  .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}

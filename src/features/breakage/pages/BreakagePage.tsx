@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Alert } from '@/shared/ui/Alert'
 import { Button } from '@/shared/ui/Button'
-import { PlusIcon, SearchIcon, UploadIcon } from '@/shared/ui/icons'
+import { ExportButton } from '@/shared/ui/ExportButton'
+import { PlusIcon, SearchIcon } from '@/shared/ui/icons'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
+import { useFocusMode } from '@/shared/hooks/useLayoutPreferences'
 import { BreakageToolbar } from '../components/BreakageToolbar'
 import { LossRecordCard } from '../components/LossRecordCard'
 import { LossRecordDialog } from '../components/LossRecordDialog'
@@ -30,6 +32,7 @@ export function BreakagePage() {
 
   // Um só listener para a lista inteira, em vez de um por cartão.
   const compact = useMediaQuery('(max-width: 599px)')
+  const focus = useFocusMode()
 
   // A tela só lê as listas — quem cria etiqueta é o formulário, e ele lê o
   // storage de novo ao abrir.
@@ -37,49 +40,56 @@ export function BreakagePage() {
 
   const vazio = list.status === 'ready' && list.records.length === 0
 
+  /**
+   * As ações acompanham o cabeçalho quando ele existe e migram para a barra de
+   * busca no modo foco. Registrar é o que se vem fazer nesta tela: escondê-la
+   * junto com o título transformaria o modo foco num beco.
+   */
+  const acoes = (
+    <>
+      {/* Exporta o que está na tela, com os filtros aplicados: quem filtrou por
+          um motivo quer levar aquele recorte, não a base. */}
+      <ExportButton
+        count={list.records.length}
+        onExport={() => exportLossRecords(list.records, reasons, origins)}
+      />
+
+      <Button onClick={() => setDialog({ open: true })} aria-label="Registrar quebra">
+        <PlusIcon width={18} height={18} />
+        <span className={styles.labelExtra}>Registrar quebra</span>
+      </Button>
+    </>
+  )
+
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.titles}>
-          <h1 className={styles.title}>Quebra</h1>
-          <span className={styles.count}>
-            {list.status === 'ready'
-              ? `${list.records.length.toLocaleString('pt-BR')} ${
-                  list.records.length === 1 ? 'registro' : 'registros'
-                }`
-              : 'carregando…'}
-          </span>
-        </div>
-
-        <div className={styles.actions}>
-          {/* Exporta o que está na tela, com os filtros aplicados: quem
-              filtrou por um motivo quer levar aquele recorte, não a base. */}
-          <Button
-            variant="secondary"
-            disabled={list.records.length === 0}
-            aria-label="Exportar para Excel"
-            onClick={() => exportLossRecords(list.records, reasons, origins)}
-          >
-            <UploadIcon className={styles.exportIcon} width={18} height={18} />
-            <span className={styles.labelExtra}>Exportar Excel</span>
-          </Button>
-
-          <Button onClick={() => setDialog({ open: true })}>
-            <PlusIcon width={18} height={18} />
-            <span>
-              Registrar<span className={styles.labelExtra}> quebra</span>
+      {!focus.focused && (
+        <header className={styles.header}>
+          <div className={styles.titles}>
+            <h1 className={styles.title}>Quebra</h1>
+            <span className={styles.count}>
+              {list.status === 'ready'
+                ? `${list.records.length.toLocaleString('pt-BR')} ${
+                    list.records.length === 1 ? 'registro' : 'registros'
+                  }`
+                : 'carregando…'}
             </span>
-          </Button>
-        </div>
-      </header>
+          </div>
+
+          <div className={styles.actions}>{acoes}</div>
+        </header>
+      )}
 
       <BreakageToolbar
         filters={list.filters}
         matching={list.records.length}
         isFiltered={list.isFiltered}
+        focused={focus.focused}
+        actions={focus.focused ? acoes : null}
         onSearch={list.setSearch}
         onStockState={list.setStockState}
         onClear={list.clearFilters}
+        onToggleFocus={focus.toggle}
       />
 
       <SelectionBar
@@ -150,7 +160,11 @@ export function BreakagePage() {
         </div>
       )}
 
-      <UndoBar records={list.undoable} onUndo={() => void list.undo()} onDismiss={list.dismissUndo} />
+      <UndoBar
+        records={list.undoable}
+        onUndo={() => void list.undo()}
+        onDismiss={list.dismissUndo}
+      />
 
       <LossRecordDialog
         open={dialog.open}

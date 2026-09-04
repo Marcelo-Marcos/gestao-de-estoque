@@ -1,4 +1,6 @@
+import type { ReactNode } from 'react'
 import { Button } from '@/shared/ui/Button'
+import { FocusToggle } from '@/shared/ui/FocusToggle'
 import { SearchIcon } from '@/shared/ui/icons'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import type { LossRecordQuery } from '../types'
@@ -15,9 +17,13 @@ interface BreakageToolbarProps {
   /** Quantos registros o filtro atual está mostrando. */
   matching: number
   isFiltered: boolean
+  focused: boolean
+  /** Ações do cabeçalho, que migram para cá quando ele sai no modo foco. */
+  actions: ReactNode
   onSearch: (search: string) => void
   onStockState: (state: LossRecordQuery['stockState']) => void
   onClear: () => void
+  onToggleFocus: () => void
 }
 
 /**
@@ -31,9 +37,12 @@ export function BreakageToolbar({
   filters,
   matching,
   isFiltered,
+  focused,
+  actions,
   onSearch,
   onStockState,
   onClear,
+  onToggleFocus,
 }: BreakageToolbarProps) {
   const isNarrow = useMediaQuery('(max-width: 719px)')
 
@@ -71,6 +80,10 @@ export function BreakageToolbar({
             </button>
           ))}
         </div>
+
+        {actions && <div className={styles.actions}>{actions}</div>}
+
+        <FocusToggle focused={focused} onToggle={onToggleFocus} />
       </div>
 
       {isFiltered && (

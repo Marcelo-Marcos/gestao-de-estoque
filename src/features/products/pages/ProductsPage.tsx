@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Button } from '@/shared/ui/Button'
+import { ExportButton } from '@/shared/ui/ExportButton'
 import { PlusIcon, UploadIcon } from '@/shared/ui/icons'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
+import { useFocusMode } from '@/shared/hooks/useLayoutPreferences'
 import { useAuth } from '@/features/auth'
 import { ImportWizard } from '../components/ImportWizard'
 import { ProductFormDialog } from '../components/ProductFormDialog'
@@ -9,6 +11,7 @@ import { ProductsEmptyState, ProductsErrorState } from '../components/ProductsEm
 import { ProductsSkeleton } from '../components/ProductsSkeleton'
 import { ProductsTable } from '../components/ProductsTable'
 import { ProductsToolbar } from '../components/ProductsToolbar'
+import { exportProducts } from '../export'
 import { useProductList } from '../hooks/useProductList'
 import type { Product } from '../types'
 import styles from './ProductsPage.module.css'
@@ -24,6 +27,7 @@ import styles from './ProductsPage.module.css'
 export function ProductsPage() {
   const list = useProductList()
   const isNarrow = useMediaQuery('(max-width: 719px)')
+  const focus = useFocusMode()
 
   // O cadastro é a base que todo registro de quebra consulta, então todos
   // leem. Só o administrador alimenta (ver CLAUDE.md, "Perfis de acesso").
@@ -47,46 +51,65 @@ export function ProductsPage() {
     setFormOpen(true)
   }
 
+  /**
+   * As ações acompanham o cabeçalho quando ele existe e migram para a barra de
+   * busca no modo foco — escondê-las junto com o título deixaria o modo foco
+   * sem saída para quem precisa cadastrar.
+   */
+  const acoes = (
+    <>
+      {/* Exportar é leitura, então fica fora do bloco do administrador. */}
+      <ExportButton count={list.products.length} onExport={() => exportProducts(list.products)} />
+
+      {podeEditar && (
+        <>
+          <Button variant="secondary" onClick={() => setImportOpen(true)}>
+            <UploadIcon width={18} height={18} />
+            {/* Rótulo em um único elemento: como o botão é flex, deixar a
+                palavra extra como irmã do texto faria o gap somar ao espaço. */}
+            <span>
+              Importar<span className={styles.labelExtra}> planilha</span>
+            </span>
+          </Button>
+          <Button onClick={() => openForm(null)}>
+            <PlusIcon width={18} height={18} />
+            <span>
+              Novo<span className={styles.labelExtra}> produto</span>
+            </span>
+          </Button>
+        </>
+      )}
+    </>
+  )
+
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.titles}>
-          <h1 className={styles.title}>Cadastro de produtos</h1>
-          <span className={styles.count}>
-            {list.status === 'ready'
-              ? `${list.total.toLocaleString('pt-BR')} produtos cadastrados`
-              : 'carregando…'}
-          </span>
-        </div>
-
-        {podeEditar && (
-          <div className={styles.actions}>
-            <Button variant="secondary" onClick={() => setImportOpen(true)}>
-              <UploadIcon width={18} height={18} />
-              {/* Rótulo em um único elemento: como o botão é flex, deixar a
-                  palavra extra como irmã do texto faria o gap somar ao espaço. */}
-              <span>
-                Importar<span className={styles.labelExtra}> planilha</span>
-              </span>
-            </Button>
-            <Button onClick={() => openForm(null)}>
-              <PlusIcon width={18} height={18} />
-              <span>
-                Novo<span className={styles.labelExtra}> produto</span>
-              </span>
-            </Button>
+      {!focus.focused && (
+        <header className={styles.header}>
+          <div className={styles.titles}>
+            <h1 className={styles.title}>Cadastro de produtos</h1>
+            <span className={styles.count}>
+              {list.status === 'ready'
+                ? `${list.total.toLocaleString('pt-BR')} produtos cadastrados`
+                : 'carregando…'}
+            </span>
           </div>
-        )}
-      </header>
+
+          <div className={styles.actions}>{acoes}</div>
+        </header>
+      )}
 
       <ProductsToolbar
         filters={list.filters}
         isFiltered={list.isFiltered}
         matching={list.matching}
         narrow={isNarrow}
+        focused={focus.focused}
+        actions={focus.focused ? acoes : null}
         onSearch={list.setSearch}
         onToggleWithoutBarcode={list.setOnlyWithoutBarcode}
         onClear={list.clearFilters}
+        onToggleFocus={focus.toggle}
       />
 
       {/* Os quatro estados de uma tela que busca dados. Nenhum pode faltar:

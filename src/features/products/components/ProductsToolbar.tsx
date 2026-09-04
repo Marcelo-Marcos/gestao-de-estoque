@@ -1,4 +1,6 @@
+import type { ReactNode } from 'react'
 import { Button } from '@/shared/ui/Button'
+import { FocusToggle } from '@/shared/ui/FocusToggle'
 import { SearchIcon } from '@/shared/ui/icons'
 import type { ProductQuery } from '../types'
 import styles from './ProductsToolbar.module.css'
@@ -9,9 +11,13 @@ interface ProductsToolbarProps {
   /** Quantos produtos atendem ao filtro no momento. */
   matching: number
   narrow: boolean
+  focused: boolean
+  /** Ações do cabeçalho, que migram para cá quando ele sai no modo foco. */
+  actions: ReactNode
   onSearch: (value: string) => void
   onToggleWithoutBarcode: (value: boolean) => void
   onClear: () => void
+  onToggleFocus: () => void
 }
 
 export function ProductsToolbar({
@@ -19,9 +25,12 @@ export function ProductsToolbar({
   isFiltered,
   matching,
   narrow,
+  focused,
+  actions,
   onSearch,
   onToggleWithoutBarcode,
   onClear,
+  onToggleFocus,
 }: ProductsToolbarProps) {
   return (
     <div className={styles.toolbar}>
@@ -48,6 +57,10 @@ export function ProductsToolbar({
         />
         Só sem código de barras
       </label>
+
+      {actions && <div className={styles.actions}>{actions}</div>}
+
+      <FocusToggle focused={focused} onToggle={onToggleFocus} />
 
       {isFiltered && (
         <div className={styles.active} role="status">

@@ -22,12 +22,6 @@
   gap: var(--sp-2);
 }
 
-/* A seta do ícone de importar apontando para cima vira "sair": é o mesmo
-   desenho, e girá-lo evita um ícone novo só para o sentido oposto. */
-.exportIcon {
-  transform: rotate(180deg);
-}
-
 .titles {
   display: flex;
   flex-direction: column;
