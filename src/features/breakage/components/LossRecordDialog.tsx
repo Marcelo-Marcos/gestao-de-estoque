@@ -4,10 +4,12 @@ import { Button } from '@/shared/ui/Button'
 import { Dialog } from '@/shared/ui/Dialog'
 import { AlertIcon } from '@/shared/ui/icons'
 import { daysUntil, parseDate } from '@/shared/lib/date'
+import { useState } from 'react'
 import { useAuth } from '@/features/auth'
 import { useLossRecordForm } from '../hooks/useLossRecordForm'
-import type { LossRecord } from '../types'
+import type { Attachment, LossRecord } from '../types'
 import { AttachmentSlots } from './AttachmentSlots'
+import { AttachmentViewer } from './AttachmentViewer'
 import { DuplicateWarning } from './DuplicateWarning'
 import { ProductPicker } from './ProductPicker'
 import { QuantityField } from './QuantityField'
@@ -51,6 +53,9 @@ function LossRecordForm({ record, onClose, onSaved }: Omit<LossRecordDialogProps
   )
 
   const restantes = daysUntil(form.expiryDate)
+
+  /** Anexo aberto para ver de dentro do próprio formulário. */
+  const [vendo, setVendo] = useState<Attachment | null>(null)
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -147,7 +152,9 @@ function LossRecordForm({ record, onClose, onSaved }: Omit<LossRecordDialogProps
 
           <AttachmentSlots
             attachments={form.attachments}
-            onToggle={form.toggleAttachment}
+            onAttach={form.attachFile}
+            onRemove={form.removeAttachment}
+            onOpen={setVendo}
           />
 
           <div className={styles.field}>
@@ -164,6 +171,8 @@ function LossRecordForm({ record, onClose, onSaved }: Omit<LossRecordDialogProps
           </div>
         </form>
       </Dialog>
+
+      <AttachmentViewer attachment={vendo} onClose={() => setVendo(null)} />
 
       <DuplicateWarning
         open={form.duplicate !== null}

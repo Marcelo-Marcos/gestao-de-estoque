@@ -1,16 +1,20 @@
-import { CameraIcon, BarcodeIcon, FileIcon } from '@/shared/ui/icons'
+import type { ChangeEvent } from 'react'
+import { CameraIcon, CloseIcon, FileIcon, ImageIcon } from '@/shared/ui/icons'
+import { ATTACHMENT_ACCEPT, ATTACHMENT_LABELS, formatSize } from '../attachments'
 import type { Attachment, AttachmentKind } from '../types'
 import styles from './AttachmentSlots.module.css'
 
 interface AttachmentSlotsProps {
   attachments: Attachment[]
-  onToggle: (kind: AttachmentKind) => void
+  onAttach: (kind: AttachmentKind, file: File) => void
+  onRemove: (kind: AttachmentKind) => void
+  onOpen: (attachment: Attachment) => void
 }
 
-const SLOTS: Array<{ kind: AttachmentKind; label: string; Icon: typeof CameraIcon }> = [
-  { kind: 'foto-produto', label: 'Foto do produto', Icon: CameraIcon },
-  { kind: 'foto-etiqueta', label: 'Etiqueta do lote', Icon: BarcodeIcon },
-  { kind: 'documento', label: 'Documento', Icon: FileIcon },
+const SLOTS: Array<{ kind: AttachmentKind; Icon: typeof CameraIcon }> = [
+  { kind: 'foto-produto', Icon: CameraIcon },
+  { kind: 'foto-etiqueta', Icon: ImageIcon },
+  { kind: 'documento', Icon: FileIcon },
 ]
 
 /**
@@ -20,10 +24,25 @@ const SLOTS: Array<{ kind: AttachmentKind; label: string; Icon: typeof CameraIco
  * melhor que registro que não acontece porque o celular ficou sem bateria no
  * corredor — e o que falta pode ser anexado depois (ver docs/dominio.md).
  *
- * PROVISÓRIO: sem servidor não há upload, então o clique apenas marca o espaço
- * como preenchido. A escolha do arquivo entra quando houver onde guardá-lo.
+ * Cada espaço é um <label> com um input de arquivo escondido: no celular isso
+ * abre direto a câmera ou a galeria, sem que a gente precise decidir por quem
+ * está usando.
  */
-export function AttachmentSlots({ attachments, onToggle }: AttachmentSlotsProps) {
+export function AttachmentSlots({
+  attachments,
+  onAttach,
+  onRemove,
+  onOpen,
+}: AttachmentSlotsProps) {
+  function handleChange(kind: AttachmentKind, event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (file) onAttach(kind, file)
+
+    // Zera o input: sem isso, escolher o mesmo arquivo de novo depois de
+    // remover não dispararia evento nenhum.
+    event.target.value = ''
+  }
+
   return (
     <div className={styles.field}>
       <span className={styles.label}>
@@ -31,20 +50,48 @@ export function AttachmentSlots({ attachments, onToggle }: AttachmentSlotsProps)
       </span>
 
       <div className={styles.slots}>
-        {SLOTS.map(({ kind, label, Icon }) => {
+        {SLOTS.map(({ kind, Icon }) => {
           const anexo = attachments.find((a) => a.kind === kind)
+          const rotulo = ATTACHMENT_LABELS[kind]
+
+          if (anexo) {
+            return (
+              <div className={`${styles.slot} ${styles.filled}`} key={kind}>
+                <button
+                  type="button"
+                  className={styles.open}
+                  onClick={() => onOpen(anexo)}
+                  aria-label={`Ver ${rotulo}: ${anexo.fileName}`}
+                >
+                  <Icon className={styles.filledIcon} width={22} height={22} />
+                  <span className={styles.fileName}>{anexo.fileName}</span>
+                  <span className={styles.size}>{formatSize(anexo.size)}</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.remove}
+                  onClick={() => onRemove(kind)}
+                  aria-label={`Remover ${rotulo}`}
+                  title={`Remover ${rotulo}`}
+                >
+                  <CloseIcon width={14} height={14} />
+                </button>
+              </div>
+            )
+          }
 
           return (
-            <button
-              type="button"
-              key={kind}
-              className={`${styles.slot} ${anexo ? styles.filled : ''}`}
-              aria-pressed={Boolean(anexo)}
-              onClick={() => onToggle(kind)}
-            >
-              <Icon className={anexo ? styles.filledIcon : undefined} width={22} height={22} />
-              <span className={styles.fileName}>{anexo ? anexo.fileName : label}</span>
-            </button>
+            <label className={styles.slot} key={kind}>
+              <input
+                type="file"
+                className={styles.input}
+                accept={ATTACHMENT_ACCEPT[kind]}
+                onChange={(event) => handleChange(kind, event)}
+              />
+              <Icon width={22} height={22} />
+              <span className={styles.fileName}>{rotulo}</span>
+            </label>
           )
         })}
       </div>

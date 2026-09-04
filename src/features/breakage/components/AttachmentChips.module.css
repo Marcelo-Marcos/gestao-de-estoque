@@ -1,0 +1,47 @@
+.chips {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.chip:hover {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand-text);
+}
+
+.chip:focus-visible {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+.empty {
+  color: var(--text-subtle);
+}
+
+/* No cartão do celular o alvo cresce para os 44px de toque. */
+@media (max-width: 719px) {
+  .chip {
+    width: var(--touch-target);
+    height: var(--touch-target);
+  }
+}

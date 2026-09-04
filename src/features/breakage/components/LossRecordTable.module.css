@@ -1,0 +1,217 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* A grade é definida uma vez e reusada pelo cabeçalho e pelas linhas. Mesma
+   ordem da tela de validades: faixa, produto, validade, número. */
+.row {
+  display: grid;
+  grid-template-columns: 3px 44px 1fr 150px 64px 220px 116px 96px;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4) 0 0;
+}
+
+.head {
+  composes: row;
+  height: 40px;
+  flex-shrink: 0;
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.scroller {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+}
+
+.item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+}
+
+.itemInner {
+  composes: row;
+  min-height: 62px;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.item:hover .itemInner {
+  background: var(--surface-hover);
+}
+
+/* Marcado se distingue pelo fundo e pela faixa da esquerda, que já é colorida
+   — a caixa marcada sozinha some numa lista longa. */
+.selected {
+  background: var(--brand-soft);
+}
+
+/* A faixa: mesma ideia da tela de validades, traduzindo o prazo em cor. */
+.stripe {
+  align-self: stretch;
+  background: var(--situation);
+}
+
+.select {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand);
+  cursor: pointer;
+}
+
+.product {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: var(--fs-sm);
+}
+
+.codes {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.expiry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.date {
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.remaining {
+  font-size: var(--fs-xs);
+}
+
+/* Os tokens de validade carregam significado de negócio; o texto ao lado diz o
+   mesmo, para a cor nunca ser o único sinal (ver CLAUDE.md). */
+.expired {
+  color: var(--expired-text);
+}
+
+.warning {
+  color: var(--warning-text);
+}
+
+.ok {
+  color: var(--text-muted);
+}
+
+.unknown {
+  color: var(--text-subtle);
+}
+
+.number {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.absent {
+  font-size: var(--fs-sm);
+  color: var(--text-subtle);
+  font-style: italic;
+}
+
+.tags {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  overflow: hidden;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-1);
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.action:hover {
+  background: var(--surface-sunken);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.action:focus-visible {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+.delete:hover {
+  background: var(--expired-soft);
+  border-color: var(--expired);
+  color: var(--expired-text);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}

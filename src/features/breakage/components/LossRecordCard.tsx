@@ -1,10 +1,12 @@
 import type { MouseEvent } from 'react'
 import { Badge } from '@/shared/ui/Badge'
-import { CalendarIcon, ChevronRightIcon, EditIcon, FileIcon, TrashIcon } from '@/shared/ui/icons'
-import { daysUntil, formatDate } from '@/shared/lib/date'
+import { CalendarIcon, ChevronRightIcon } from '@/shared/ui/icons'
+import { formatDate } from '@/shared/lib/date'
+import { deadline } from '../deadline'
 import { recordLabel } from '../label'
 import { labelOf } from '../tags'
 import type { LossRecord, Tag } from '../types'
+import { AttachmentChips } from './AttachmentChips'
 import styles from './LossRecordCard.module.css'
 
 interface LossRecordCardProps {
@@ -12,28 +14,9 @@ interface LossRecordCardProps {
   reasons: Tag[]
   origins: Tag[]
   selected: boolean
-  /** Tela estreita: os botões saem e o cartão inteiro abre a edição. */
-  compact: boolean
   onToggleSelect: (id: string) => void
   onEdit: (record: LossRecord) => void
-  onDelete: (record: LossRecord) => void
-}
-
-/**
- * Texto do prazo, com o token de cor que ele merece.
- *
- * A cor nunca vem sozinha: o texto diz "venceu há 4 dias" mesmo para quem não
- * enxerga a diferença entre vermelho e âmbar (ver CLAUDE.md).
- */
-function deadline(record: LossRecord) {
-  if (!record.expiryDate) return { token: 'unknown', text: 'sem validade' }
-
-  const restantes = daysUntil(record.expiryDate)
-  if (restantes === null) return { token: 'unknown', text: 'sem validade' }
-
-  if (restantes < 0) return { token: 'expired', text: `venceu há ${Math.abs(restantes)} dias` }
-  if (restantes === 0) return { token: 'warning', text: 'vence hoje' }
-  return { token: restantes <= 30 ? 'warning' : 'ok', text: `vence em ${restantes} dias` }
+  onOpenAttachment: (record: LossRecord, attachmentId: string) => void
 }
 
 /**
@@ -43,21 +26,21 @@ function deadline(record: LossRecord) {
  * celular: o que interessa — o produto, quanto e por quê — precisa caber sem
  * rolagem lateral.
  *
- * No celular os botões de editar e excluir saem. Não cabem na linha dos chips
+ * Os botões de editar e excluir não cabem aqui: não entram na linha dos chips
  * (um motivo comprido já ocupa a largura toda) e numa linha própria custavam
  * 52px por registro — quase meio cartão a menos na tela. No lugar deles, o
  * cartão inteiro abre a edição, e a exclusão vem pela seleção, que já existe e
- * serve melhor quando é mais de um.
+ * serve melhor quando é mais de um. Da largura de tablet para cima a lista
+ * deixa de ser cartão e vira tabela, onde os botões cabem.
  */
 export function LossRecordCard({
   record,
   reasons,
   origins,
   selected,
-  compact,
   onToggleSelect,
   onEdit,
-  onDelete,
+  onOpenAttachment,
 }: LossRecordCardProps) {
   const prazo = deadline(record)
   const motivo = labelOf(reasons, record.reasonId)
@@ -70,7 +53,6 @@ export function LossRecordCard({
    * fazendo o que a pessoa esperava.
    */
   function handleClick(event: MouseEvent<HTMLElement>) {
-    if (!compact) return
     if ((event.target as HTMLElement).closest('button, input, label, a')) return
     if (window.getSelection()?.toString()) return
     onEdit(record)
@@ -78,8 +60,8 @@ export function LossRecordCard({
 
   return (
     <article
-      className={`${styles.card} ${zerado ? styles.zeroed : ''} ${selected ? styles.selected : ''} ${
-        compact ? styles.tappable : ''
+      className={`${styles.card} ${styles.tappable} ${zerado ? styles.zeroed : ''} ${
+        selected ? styles.selected : ''
       }`}
       onClick={handleClick}
     >
@@ -102,18 +84,14 @@ export function LossRecordCard({
               leitor de tela anuncia tudo como um bloco só. O clique no resto do
               cartão é atalho por cima disso, não o único caminho. */}
           <h2 className={styles.description}>
-            {compact ? (
-              <button
-                type="button"
-                className={styles.open}
-                onClick={() => onEdit(record)}
-                aria-label={`Editar registro de ${recordLabel(record)}`}
-              >
-                {record.description || 'Sem descrição'}
-              </button>
-            ) : (
-              (record.description ?? '') || 'Sem descrição'
-            )}
+            <button
+              type="button"
+              className={styles.open}
+              onClick={() => onEdit(record)}
+              aria-label={`Editar registro de ${recordLabel(record)}`}
+            >
+              {record.description || 'Sem descrição'}
+            </button>
           </h2>
           <span className={styles.codes}>
             {record.sku ? `SKU ${record.sku}` : 'SKU pendente'}
@@ -133,7 +111,7 @@ export function LossRecordCard({
         </div>
 
         {/* Sinal de que o cartão abre: sem ele, tocar para editar é um segredo. */}
-        {compact && <ChevronRightIcon className={styles.chevron} width={18} height={18} />}
+        <ChevronRightIcon className={styles.chevron} width={18} height={18} />
       </div>
 
       {record.note && <p className={styles.note}>{record.note}</p>}
@@ -158,43 +136,12 @@ export function LossRecordCard({
           {origem && <Badge tone="neutro">{origem}</Badge>}
           {record.pendingProduct && <Badge tone="duplicado">Pendente de cadastro</Badge>}
           {zerado && <Badge tone="invalido">Saldo zerado</Badge>}
-
-          {record.attachments.length > 0 && (
-            <span className={styles.attachments}>
-              <FileIcon width={14} height={14} />
-              {record.attachments.length}
-              <span className={styles.srOnly}>
-                {record.attachments.length === 1 ? 'anexo' : 'anexos'}
-              </span>
-            </span>
-          )}
         </div>
 
-        {!compact && (
-          <div className={styles.foot}>
-            <button
-              type="button"
-              className={styles.action}
-              onClick={() => onEdit(record)}
-              aria-label={`Editar registro de ${recordLabel(record)}`}
-            >
-              <EditIcon width={16} height={16} />
-              <span className={styles.actionLabel}>Editar</span>
-            </button>
-
-            {/* Sem confirmação: o desfazer da tela resolve o engano sem cobrar
-                um clique extra de toda exclusão de rotina (ver docs/dominio.md). */}
-            <button
-              type="button"
-              className={`${styles.action} ${styles.delete}`}
-              onClick={() => onDelete(record)}
-              aria-label={`Excluir registro de ${recordLabel(record)}`}
-            >
-              <TrashIcon width={16} height={16} />
-              <span className={styles.actionLabel}>Excluir</span>
-            </button>
-          </div>
-        )}
+        <AttachmentChips
+          attachments={record.attachments}
+          onOpen={(attachmentId) => onOpenAttachment(record, attachmentId)}
+        />
       </div>
     </article>
   )

@@ -8,7 +8,11 @@
 export function downloadFile(bytes: Uint8Array, fileName: string, mimeType: string): void {
   // A cópia evita depender de o Uint8Array vir de um ArrayBuffer comum: em
   // memória compartilhada (SharedArrayBuffer) o Blob recusaria os bytes.
-  const blob = new Blob([new Uint8Array(bytes)], { type: mimeType })
+  downloadBlob(new Blob([new Uint8Array(bytes)], { type: mimeType }), fileName)
+}
+
+/** Mesma entrega, para quem já tem o arquivo pronto — um anexo, por exemplo. */
+export function downloadBlob(blob: Blob, fileName: string): void {
   const url = URL.createObjectURL(blob)
 
   const link = document.createElement('a')

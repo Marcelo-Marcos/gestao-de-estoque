@@ -22,6 +22,10 @@ export interface Attachment {
   id: string
   kind: AttachmentKind
   fileName: string
+  /** Para o visualizador saber se mostra a imagem ou só oferece o download. */
+  mimeType: string
+  /** Em bytes, para avisar o tamanho antes de alguém baixar no 4G da loja. */
+  size: number
 }
 
 /**

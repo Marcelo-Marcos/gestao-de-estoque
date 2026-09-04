@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getProduct } from '@/features/products'
 import type { IsoDate } from '@/shared/lib/date'
 import { addToRecord, createLossRecord, findSameRecord, updateLossRecord } from '../api'
+import { putAttachmentFile } from '../attachments'
 import type { AttachmentKind, LossRecord, LossRecordDraft } from '../types'
 import type { ChosenProduct } from '../components/ProductPicker'
 import { useTagLists } from './useTagLists'
@@ -101,17 +102,24 @@ export function useLossRecordForm(
     [product, expiryDate, quantity, reasonId, originId, note, attachments],
   )
 
-  const toggleAttachment = useCallback((kind: AttachmentKind) => {
-    setAttachments((current) => {
-      if (current.some((a) => a.kind === kind)) return current.filter((a) => a.kind !== kind)
+  /**
+   * Guarda o arquivo e descreve o anexo.
+   *
+   * Um espaço por tipo: escolher de novo troca o que estava lá, em vez de
+   * empilhar duas fotos do produto que ninguém saberia distinguir depois.
+   */
+  const attachFile = useCallback((kind: AttachmentKind, file: File) => {
+    const id = `${kind}-${Date.now()}`
+    putAttachmentFile(id, file)
 
-      const nomes: Record<AttachmentKind, string> = {
-        'foto-produto': 'foto-produto.jpg',
-        'foto-etiqueta': 'etiqueta-lote.jpg',
-        documento: 'documento.pdf',
-      }
-      return [...current, { id: `${kind}-${Date.now()}`, kind, fileName: nomes[kind] }]
-    })
+    setAttachments((current) => [
+      ...current.filter((a) => a.kind !== kind),
+      { id, kind, fileName: file.name, mimeType: file.type, size: file.size },
+    ])
+  }, [])
+
+  const removeAttachment = useCallback((kind: AttachmentKind) => {
+    setAttachments((current) => current.filter((a) => a.kind !== kind))
   }, [])
 
   const persist = useCallback(async () => {
@@ -178,7 +186,8 @@ export function useLossRecordForm(
     note,
     setNote,
     attachments,
-    toggleAttachment,
+    attachFile,
+    removeAttachment,
     reasons,
     origins,
     addReason,

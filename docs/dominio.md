@@ -205,8 +205,14 @@ do produto, não de um controle paralelo.
 A lista aceita itens repetidos do mesmo produto, por causa dos motivos e das
 validades diferentes.
 
-No celular o cartão inteiro abre a edição, e os botões de editar e excluir não
-aparecem nele. Não é economia de enfeite: um motivo comprido já ocupa a largura
+Da largura de tablet para cima a lista é uma **tabela**, na mesma grade da tela
+de validades: as duas mostram registros de produto, e encontrar uma coluna no
+mesmo lugar nas duas vale mais que cada tela ter o desenho ideal para si. Abaixo
+de 720px nenhuma tabela cabe e a lista vira cartão — o mesmo corte da tela de
+validades.
+
+No cartão do celular o registro inteiro abre a edição, e os botões de editar e
+excluir não aparecem nele. Não é economia de enfeite: um motivo comprido já ocupa a largura
 toda dos chips, e os botões numa linha própria custavam 52px por registro — de
 199px de cartão para 144px, quase um registro a mais por tela. A exclusão
 continua acessível pela seleção, que serve melhor quando é mais de um. Da
@@ -228,9 +234,42 @@ abre em "no estoque". Um registro que zerou já não é trabalho pendente: deix�
 à vista faria a lista crescer com o que não exige decisão de ninguém. Continua a
 um toque de distância, porque é ali que o usuário confere o que pode excluir.
 
+### Anexos
+
+Três espaços por registro: **foto do produto**, **foto da etiqueta** e
+**documento**. Cada um aceita um arquivo — escolher de novo troca o que estava
+lá, em vez de empilhar duas fotos que ninguém saberia distinguir depois.
+
+Na lista eles aparecem como **um ícone por tipo**, e não como um contador:
+"3 anexos" não diz se o que falta é a foto da etiqueta ou o e-mail da
+divergência, que é justamente a pergunta de quem confere. Clicar abre o
+arquivo; imagem aparece na hora, documento se apresenta e oferece o download —
+um PDF embutido num diálogo pequeno é pior que o leitor do próprio aparelho.
+
+Nenhum é obrigatório, nem no motivo mais grave (ver acima).
+
+### Ver mais registros de uma vez
+
+Duas alavancas, e nenhuma delas é a tela cheia do navegador — o F11 já faz
+isso, e o que atrapalha não é a moldura do navegador, é a nossa.
+
+A **barra lateral recolhe** à coluna dos ícones, devolvendo 192px de largura.
+E um **botão de foco**, no mesmo lugar em toda tela com lista, esconde o
+cabeçalho da página e os cartões de situação: a lista passa de 543 para 758px
+de altura, de cinco para doze lotes visíveis.
+
+Duas regras que o modo foco não pode quebrar. As ações do cabeçalho **migram
+para a barra de busca** em vez de sumirem — registrar é o que se vem fazer na
+tela de quebra, e escondê-lo transformaria o modo num beco. E o filtro que os
+cartões aplicam **continua visível** na faixa abaixo, com o botão de limpar,
+porque uma lista filtrada que parece a lista inteira engana (ver CLAUDE.md).
+
 ### Exportar para planilha
 
-A quebra sai em `.xlsx` **com os filtros aplicados**, na ordem da tela. Quem
+Toda tela com registros exporta em `.xlsx` **com os filtros aplicados**, na
+ordem da tela — quebra, cadastro de produtos e validades, esta levando junto
+estoque, saídas e o período, sem os quais "sai em 195 dias" chega ao Excel como
+um número sem procedência. Quem
 filtrou por um motivo quer levar aquele recorte para a reunião, não a base
 inteira; exportar tudo obrigaria a filtrar de novo no Excel, refazendo à mão o
 que a tela já sabe.

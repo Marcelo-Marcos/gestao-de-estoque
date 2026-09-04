@@ -91,22 +91,16 @@
   font-size: var(--fs-sm);
 }
 
-/* A partir do tablet cabem duas colunas sem espremer a descrição, e numa tela
-   larga cabem três — em 1440px, duas colunas deixavam metade da altura útil
-   sobrando à direita. */
-@media (min-width: 900px) {
-  .list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-content: start;
-  }
-}
+/* Da largura de tablet para cima a lista é uma tabela virtualizada, que rola
+   dentro de si. A página então não pode rolar junto: com altura livre, o
+   container de rolagem ficaria do tamanho de todos os itens e a virtualização
+   deixaria de ter efeito (a mesma razão do .shell em AppShell.module.css).
 
-/* A terceira coluna só entra quando cada cartão ainda tem largura para os
-   chips e os botões dividirem a mesma linha. Antes disso, três colunas deixam
-   o cartão tão estreito quanto no celular — e mais alto, não mais denso. */
-@media (min-width: 1600px) {
-  .list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+   No celular é o contrário: a página inteira rola, e é isso que faz o
+   cabeçalho sair da tela e devolver espaço à lista. */
+@media (min-width: 720px) {
+  .page {
+    overflow: hidden;
   }
 }
 

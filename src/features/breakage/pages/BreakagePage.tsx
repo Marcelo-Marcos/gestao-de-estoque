@@ -6,14 +6,16 @@ import { PlusIcon, SearchIcon } from '@/shared/ui/icons'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { useFocusMode } from '@/shared/hooks/useLayoutPreferences'
 import { BreakageToolbar } from '../components/BreakageToolbar'
+import { AttachmentViewer } from '../components/AttachmentViewer'
 import { LossRecordCard } from '../components/LossRecordCard'
 import { LossRecordDialog } from '../components/LossRecordDialog'
+import { LossRecordTable } from '../components/LossRecordTable'
 import { SelectionBar } from '../components/SelectionBar'
 import { UndoBar } from '../components/UndoBar'
 import { exportLossRecords } from '../export'
 import { useLossRecordList } from '../hooks/useLossRecordList'
 import { useTagLists } from '../hooks/useTagLists'
-import type { LossRecord } from '../types'
+import type { Attachment, LossRecord } from '../types'
 import styles from './BreakagePage.module.css'
 
 /** Diálogo fechado, criando um registro novo, ou alterando um existente. */
@@ -30,9 +32,17 @@ export function BreakagePage() {
   const list = useLossRecordList()
   const [dialog, setDialog] = useState<DialogState>({ open: false })
 
-  // Um só listener para a lista inteira, em vez de um por cartão.
-  const compact = useMediaQuery('(max-width: 599px)')
+  // Mesmo corte da tela de validades: abaixo disso nenhuma tabela cabe, e a
+  // lista vira cartão. Um só listener para a lista inteira.
+  const isNarrow = useMediaQuery('(max-width: 719px)')
   const focus = useFocusMode()
+
+  /** Anexo aberto no visualizador. */
+  const [viewing, setViewing] = useState<Attachment | null>(null)
+
+  function openAttachment(record: LossRecord, attachmentId: string) {
+    setViewing(record.attachments.find((a) => a.id === attachmentId) ?? null)
+  }
 
   // A tela só lê as listas — quem cria etiqueta é o formulário, e ele lê o
   // storage de novo ao abrir.
@@ -142,23 +152,37 @@ export function BreakagePage() {
         </div>
       )}
 
-      {list.status === 'ready' && list.records.length > 0 && (
-        <div className={styles.list}>
-          {list.records.map((record) => (
-            <LossRecordCard
-              key={record.id}
-              record={record}
-              reasons={reasons}
-              origins={origins}
-              selected={list.selection.has(record.id)}
-              compact={compact}
-              onToggleSelect={list.toggleSelected}
-              onEdit={(alvo) => setDialog({ open: true, record: alvo })}
-              onDelete={(alvo) => void list.remove([alvo.id])}
-            />
-          ))}
-        </div>
-      )}
+      {list.status === 'ready' &&
+        list.records.length > 0 &&
+        (isNarrow ? (
+          <div className={styles.list}>
+            {list.records.map((record) => (
+              <LossRecordCard
+                key={record.id}
+                record={record}
+                reasons={reasons}
+                origins={origins}
+                selected={list.selection.has(record.id)}
+                onToggleSelect={list.toggleSelected}
+                onEdit={(alvo) => setDialog({ open: true, record: alvo })}
+                onOpenAttachment={openAttachment}
+              />
+            ))}
+          </div>
+        ) : (
+          <LossRecordTable
+            records={list.records}
+            reasons={reasons}
+            origins={origins}
+            selection={list.selection}
+            onToggleSelect={list.toggleSelected}
+            onEdit={(alvo) => setDialog({ open: true, record: alvo })}
+            onDelete={(alvo) => void list.remove([alvo.id])}
+            onOpenAttachment={openAttachment}
+          />
+        ))}
+
+      <AttachmentViewer attachment={viewing} onClose={() => setViewing(null)} />
 
       <UndoBar
         records={list.undoable}

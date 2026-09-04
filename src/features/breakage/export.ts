@@ -38,7 +38,8 @@ function toRow(record: LossRecord, reasons: Tag[], origins: Tag[]): ExportValue[
     labelOf(reasons, record.reasonId) || null,
     labelOf(origins, record.originId) || null,
     record.note || null,
-    record.attachments.length,
+    // Os nomes, e não a contagem: "2" não diz se o que falta é a etiqueta.
+    record.attachments.map((a) => a.fileName).join(' · ') || null,
     record.createdBy,
     { date: record.createdAt.slice(0, 10) },
     record.pendingProduct ? 'Pendente de cadastro' : 'Cadastrado',
