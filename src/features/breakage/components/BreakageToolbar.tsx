@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Button } from '@/shared/ui/Button'
 import { FocusToggle } from '@/shared/ui/FocusToggle'
+import { ScanButton } from '@/shared/ui/ScanButton'
 import { SearchIcon } from '@/shared/ui/icons'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import type { LossRecordQuery } from '../types'
@@ -62,6 +63,10 @@ export function BreakageToolbar({
             aria-label="Buscar registros"
             autoComplete="off"
           />
+
+          {/* A busca aceita o código lido, não só o digitado: no corredor a
+              etiqueta está na mão e o teclado do celular não. */}
+          <ScanButton onDetect={onSearch} label="Buscar por código de barras" />
         </div>
 
         <div className={styles.tabs} role="tablist" aria-label="Situação do saldo">

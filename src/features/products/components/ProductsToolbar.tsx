@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Button } from '@/shared/ui/Button'
 import { FocusToggle } from '@/shared/ui/FocusToggle'
+import { ScanButton } from '@/shared/ui/ScanButton'
 import { SearchIcon } from '@/shared/ui/icons'
 import type { ProductQuery } from '../types'
 import styles from './ProductsToolbar.module.css'
@@ -47,6 +48,10 @@ export function ProductsToolbar({
           aria-label="Buscar produtos"
           autoComplete="off"
         />
+
+        {/* A busca aceita o código lido, não só o digitado: no corredor a
+            etiqueta está na mão e o teclado do celular não. */}
+        <ScanButton onDetect={onSearch} label="Buscar por código de barras" />
       </div>
 
       <label className={`${styles.filter} ${filters.onlyWithoutBarcode ? styles.filterOn : ''}`}>

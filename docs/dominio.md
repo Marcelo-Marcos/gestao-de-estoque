@@ -234,6 +234,27 @@ abre em "no estoque". Um registro que zerou já não é trabalho pendente: deix�
 à vista faria a lista crescer com o que não exige decisão de ninguém. Continua a
 um toque de distância, porque é ali que o usuário confere o que pode excluir.
 
+### Ler o código de barras
+
+Toda busca de produto — validades, cadastro, quebra e o registro por dentro —
+aceita o código lido pela câmera, não só o digitado. No corredor a etiqueta
+está na mão e o teclado do celular não.
+
+O botão **não existe onde o aparelho não lê**. A leitura usa o `BarcodeDetector`
+do próprio navegador, que o Safari não implementa: no iPhone o botão some e a
+digitação continua sendo o caminho. Oferecer uma ação que falha no clique é
+pior que não oferecer (ver CLAUDE.md).
+
+A troca foi consciente: uma biblioteca de decodificação funcionaria em todo
+aparelho, mas custaria centenas de kilobytes de WebAssembly que a maioria
+nunca usaria. Se o iPhone precisar ler, é o módulo `shared/lib/barcode.ts` que
+muda — as telas conversam com ele, não com a API do navegador.
+
+Dentro do registro de quebra, o código lido **escolhe o produto sozinho**
+quando casa com um só: quem apontou a câmera para a etiqueta já disse qual
+produto é, e confirmar o único resultado seria pedir a mesma resposta duas
+vezes. Com mais de um casamento, ou nenhum, a lista aparece.
+
 ### Anexos
 
 Três espaços por registro: **foto do produto**, **foto da etiqueta** e

@@ -5,6 +5,7 @@ import { ProductsSkeleton } from '@/features/products'
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery'
 import { useFocusMode } from '@/shared/hooks/useLayoutPreferences'
 import { FocusToggle } from '@/shared/ui/FocusToggle'
+import { ScanButton } from '@/shared/ui/ScanButton'
 import { SearchIcon, UploadIcon } from '@/shared/ui/icons'
 import { SITUATIONS } from '../situation'
 import { ExpiryTable } from '../components/ExpiryTable'
@@ -36,17 +37,15 @@ export function ExpiryPage() {
         count={list.rows.length}
         onExport={() => exportExpiryRows(list.rows, list.periodDays)}
       />
+      {/* "saldo" e "saídas" são o que distingue os dois botões: escondê-los
+          no celular deixava dois "Importar" idênticos lado a lado. */}
       <Button variant="secondary">
         <UploadIcon width={18} height={18} />
-        <span>
-          Importar<span className={styles.labelExtra}> saldo</span>
-        </span>
+        <span>Importar saldo</span>
       </Button>
       <Button variant="secondary">
         <UploadIcon width={18} height={18} />
-        <span>
-          Importar<span className={styles.labelExtra}> saídas</span>
-        </span>
+        <span>Importar saídas</span>
       </Button>
     </>
   )
@@ -94,6 +93,10 @@ export function ExpiryPage() {
             aria-label="Buscar lotes"
             autoComplete="off"
           />
+
+          {/* A busca aceita o código lido, não só o digitado: no corredor a
+              etiqueta está na mão e o teclado do celular não. */}
+          <ScanButton onDetect={list.setSearch} label="Buscar por código de barras" />
         </div>
 
         {/* O número que sustenta a previsão fica visível: sem ele, "sai em 195

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { listProducts, type Product } from '@/features/products'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
-import { AlertIcon, BarcodeIcon, CheckIcon, SearchIcon } from '@/shared/ui/icons'
+import { AlertIcon, CheckIcon, SearchIcon } from '@/shared/ui/icons'
+import { ScanButton } from '@/shared/ui/ScanButton'
 import { TextField } from '@/shared/ui/TextField'
 import { digitsOnly } from '@/shared/lib/cell'
 import styles from './ProductPicker.module.css'
@@ -123,6 +124,31 @@ export function ProductPicker({ chosen, onChoose, onDescriptionChange }: Product
     )
   }
 
+  /**
+   * O código lido escolhe o produto sozinho quando não há dúvida.
+   *
+   * Quem apontou a câmera para a etiqueta já disse qual produto é; obrigar um
+   * toque a mais para confirmar o único resultado seria pedir a mesma resposta
+   * duas vezes. Com mais de um casamento — ou nenhum — a lista aparece e a
+   * escolha continua sendo de quem está lendo.
+   */
+  async function scanned(code: string) {
+    setTerm(code)
+
+    const page = await listProducts({ search: code, onlyWithoutBarcode: false })
+    if (page.items.length !== 1) return
+
+    const product = page.items[0]
+    onChoose({
+      productId: product.id,
+      sku: product.sku,
+      description: product.description,
+      barcode: product.barcode,
+      pendingProduct: false,
+      stock: product.stock,
+    })
+  }
+
   const soDigitos = digitsOnly(busca)
   const pareceCodigo = soDigitos.length >= 8 && soDigitos === busca
 
@@ -144,10 +170,9 @@ export function ProductPicker({ chosen, onChoose, onDescriptionChange }: Product
         </div>
 
         {/* A câmera é o caminho principal no corredor; a digitação é a saída
-            para quando o código está apagado. */}
-        <button type="button" className={styles.scan} aria-label="Ler código de barras">
-          <BarcodeIcon width={22} height={22} />
-        </button>
+            para quando o código está apagado, e o único caminho onde o
+            aparelho não sabe ler. */}
+        <ScanButton onDetect={(code) => void scanned(code)} label="Ler o código do produto" />
       </div>
 
       {results !== null && results.length > 0 && (

@@ -45,23 +45,6 @@
 }
 
 /* Leitura por câmera: o caminho principal de quem está no corredor. */
-.scan {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--touch-target);
-  height: var(--touch-target);
-  flex-shrink: 0;
-  background: var(--brand);
-  border: none;
-  border-radius: var(--radius);
-  color: var(--brand-contrast);
-}
-
-.scan:hover {
-  background: var(--brand-hover);
-}
-
 .results {
   display: flex;
   flex-direction: column;
