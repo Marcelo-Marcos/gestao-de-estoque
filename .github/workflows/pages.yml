@@ -4,6 +4,9 @@
 # para entregar a câmera ao leitor de código de barras.
 name: Publicar no GitHub Pages
 
+# O Pages precisa estar ligado uma vez à mão, em Settings › Pages › Source:
+# GitHub Actions. O token deste fluxo publica, mas não tem permissão para criar
+# o site — tentar isso aqui só fazia a publicação falhar antes de começar.
 on:
   push:
     branches: [main]
@@ -31,12 +34,6 @@ jobs:
         with:
           node-version: 22
           cache: npm
-
-      # Liga o Pages sozinho na primeira execução, para não depender de
-      # ninguém lembrar de marcar a opção nas configurações do repositório.
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - run: npm ci
 
