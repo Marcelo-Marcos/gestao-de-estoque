@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:demo": "node scripts/build-demo.mjs",
+    "build:pages": "node scripts/build-pages.mjs",
     "preview": "vite preview",
     "lint": "npm run lint:types && npm run lint:code && npm run lint:css",
     "lint:types": "tsc -b --noEmit",

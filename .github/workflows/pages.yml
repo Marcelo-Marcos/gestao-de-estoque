@@ -1,0 +1,62 @@
+# Publica o app no GitHub Pages a cada push na main.
+#
+# É o endereço para abrir no celular: HTTPS, que é o que o navegador exige
+# para entregar a câmera ao leitor de código de barras.
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Permite publicar à mão pela aba Actions, sem precisar de um commit novo.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Uma publicação por vez; se duas forem disparadas, a mais nova espera a
+# anterior terminar em vez de cancelá-la no meio.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Liga o Pages sozinho na primeira execução, para não depender de
+      # ninguém lembrar de marcar a opção nas configurações do repositório.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - run: npm ci
+
+      # As mesmas checagens do hook de pré-commit: nada vai ao ar sem passar.
+      - run: npm run lint
+
+      - run: npm run build:pages
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

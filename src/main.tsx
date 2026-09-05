@@ -13,12 +13,21 @@ import './styles/global.css'
  */
 const Router = import.meta.env.VITE_HASH_ROUTER === 'true' ? HashRouter : BrowserRouter
 
+/**
+ * O prefixo do endereço, quando o app não está na raiz do domínio.
+ *
+ * O Vite entrega o mesmo valor de `base` do build; sem passá-lo ao roteador,
+ * "/gestao-de-estoque/validades" não casaria com a rota "/validades" e toda
+ * navegação cairia no redirecionamento de endereço desconhecido.
+ */
+const basename = import.meta.env.BASE_URL
+
 const container = document.getElementById('root')
 if (!container) throw new Error('Elemento #root não encontrado no index.html')
 
 createRoot(container).render(
   <StrictMode>
-    <Router>
+    <Router basename={basename}>
       <AppearanceProvider>
         <AuthProvider>
           <AppRoutes />
